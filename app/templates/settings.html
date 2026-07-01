@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="form-page">
+    <div>
+        <p class="eyebrow">Team settings</p>
+        <h1>{{ team.name }}</h1>
+        <p class="lede">Current season: {{ seasons[team.current_season].name }}. Update members, departments, logo, or join a different season.</p>
+    </div>
+
+    <form class="panel form-grid" method="post">
+        <label>Team name <input name="team_name" required value="{{ team.name }}"></label>
+        <label>Department(s) <input name="departments" required value="{{ team.departments }}"></label>
+        <label>Captain name <input name="captain_name" required value="{{ team.captain.full_name }}"></label>
+        <label>Team logo URL <input name="logo_url" value="{{ team.logo_url or '' }}"></label>
+        <label>Change season
+            <select name="season">
+                {% for key, value in seasons.items() %}
+                <option value="{{ key }}" {% if key == team.current_season %}selected{% endif %}>{{ value.name }} · {{ value.period }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div class="wide">
+            <div class="section-heading">
+                <h2>Members</h2>
+                <button class="button ghost" type="button" data-add-member>Add member</button>
+            </div>
+            <div data-members>
+                {% for member in team.members %}
+                <div class="member-row">
+                    <input name="member_name" required value="{{ member.full_name }}" placeholder="Full name">
+                    <input name="member_email" required value="{{ member.email }}" type="email" placeholder="Email">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button class="button primary wide" type="submit">Save settings</button>
+    </form>
+</section>
+{% endblock %}

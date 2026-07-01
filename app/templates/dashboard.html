@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="dashboard">
+    <div class="team-hero">
+        <div class="team-identity">
+            {% if team.logo_url %}
+            <img src="{{ team.logo_url }}" alt="{{ team.name }} logo">
+            {% else %}
+            <div class="logo-placeholder">{{ team.name[:1] }}</div>
+            {% endif %}
+            <div>
+                <p class="eyebrow">{{ seasons[season].name }} Season</p>
+                <h1>{{ team.name }}</h1>
+                <p>{{ team.departments }} · Captain: {{ team.captain.full_name }} · {{ team.member_count }} members</p>
+            </div>
+        </div>
+        <div class="score-card">
+            <span>{{ points }}</span>
+            <p>points</p>
+        </div>
+    </div>
+
+    <h2>Season Challenges</h2>
+    <div class="pillar-grid">
+        {% for pillar, challenges in pillars.items() %}
+        <article class="panel pillar-card">
+            <h3>{{ pillar }}</h3>
+            {% for challenge in challenges %}
+            {% set completion = completion_map.get(challenge.key) %}
+            <form class="challenge-row" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
+                <div>
+                    <strong>{{ challenge.title }}</strong>
+                    <p>{{ challenge.description }}</p>
+                </div>
+                <label><input type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()"> Mark as completed</label>
+                <label><input type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} onchange="this.form.submit()"> Proof photo sent</label>
+            </form>
+            {% endfor %}
+        </article>
+        {% endfor %}
+    </div>
+
+    <h2>Bonus Challenges</h2>
+    <div class="bonus-grid">
+        {% for challenge in bonus_challenges %}
+        {% set completion = completion_map.get(challenge.key) %}
+        <form class="panel bonus-card" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
+            <strong>{{ challenge.title }}</strong>
+            <span>2 points</span>
+            <label><input type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()"> Mark as completed</label>
+        </form>
+        {% endfor %}
+    </div>
+
+    <section class="leaderboard-layout">
+        <div>
+            <h2>Podium</h2>
+            <div class="podium">
+                {% for item in ranking[:3] %}
+                <div class="podium-place place-{{ loop.index }}">
+                    {% if item.team.logo_url %}
+                    <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
+                    {% endif %}
+                    <strong>#{{ loop.index }} {{ item.team.name }}</strong>
+                    <span>{{ item.points }} pts</span>
+                </div>
+                {% else %}
+                <p class="muted">No teams yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <h2>Ranking</h2>
+            <div class="ranking-list">
+                {% for item in ranking %}
+                <div class="ranking-row">
+                    <span>#{{ loop.index }}</span>
+                    {% if item.team.logo_url %}
+                    <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
+                    {% endif %}
+                    <div>
+                        <strong>{{ item.team.name }}</strong>
+                        <small>{{ item.team.departments }}</small>
+                    </div>
+                    <b>{{ item.points }} pts</b>
+                </div>
+                {% else %}
+                <p class="muted">No ranking entries yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="auth-shell">
+    <div>
+        <p class="eyebrow">Seasonal team wellbeing</p>
+        <h1>Wellbeing Quest</h1>
+        <p class="lede">Sign in, create your team, join a season, and track Body, Mind and Soul challenges together.</p>
+    </div>
+
+    <div class="auth-panel">
+        <div class="tabs" data-tabs>
+            <button class="tab active" data-tab="login" type="button">Login</button>
+            <button class="tab" data-tab="register" type="button">Register</button>
+            <button class="tab" data-tab="admin" type="button">Admin Login</button>
+        </div>
+
+        <form class="tab-panel active" data-panel="login" method="post" action="{{ url_for('auth.login') }}">
+            {{ login_form.hidden_tag() }}
+            <label>Email {{ login_form.email() }}</label>
+            <label>Password {{ login_form.password() }}</label>
+            {{ login_form.submit(class_="button primary") }}
+        </form>
+
+        <form class="tab-panel" data-panel="register" method="post" action="{{ url_for('auth.register') }}">
+            {{ register_form.hidden_tag() }}
+            <label>Full name {{ register_form.full_name() }}</label>
+            <label>Email {{ register_form.email() }}</label>
+            <label>Password {{ register_form.password() }}</label>
+            <label>Confirm password {{ register_form.confirm_password() }}</label>
+            {{ register_form.submit(class_="button primary") }}
+        </form>
+
+        <form class="tab-panel" data-panel="admin" method="post" action="{{ url_for('auth.login') }}">
+            {{ login_form.hidden_tag() }}
+            <label>Admin email {{ login_form.email() }}</label>
+            <label>Password {{ login_form.password() }}</label>
+            <button class="button primary" type="submit">Login as admin</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="form-page">
+    <div>
+        <p class="eyebrow">First setup</p>
+        <h1>Create your team</h1>
+        <p class="lede">Create the team once, then join a new season whenever the programme moves forward.</p>
+    </div>
+
+    <form class="panel form-grid" method="post">
+        <label>Team name <input name="team_name" required maxlength="150"></label>
+        <label>Department(s) <input name="departments" required maxlength="255" placeholder="HR, Finance, Faculty..."></label>
+        <label>Captain name <input name="captain_name" required value="{{ current_user.full_name }}"></label>
+        <label>Team logo URL <input name="logo_url" placeholder="https://..."></label>
+        <label>Join season
+            <select name="season">
+                {% for key, value in seasons.items() %}
+                <option value="{{ key }}">{{ value.name }} · {{ value.period }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div class="wide">
+            <div class="section-heading">
+                <h2>Team members</h2>
+                <button class="button ghost" type="button" data-add-member>Add member</button>
+            </div>
+            <div data-members>
+                <div class="member-row">
+                    <input name="member_name" required value="{{ current_user.full_name }}" placeholder="Full name">
+                    <input name="member_email" required value="{{ current_user.email }}" type="email" placeholder="Email">
+                </div>
+            </div>
+        </div>
+
+        <button class="button primary wide" type="submit">Create team and join season</button>
+    </form>
+</section>
+{% endblock %}
