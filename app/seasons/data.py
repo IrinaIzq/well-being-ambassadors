@@ -52,21 +52,20 @@ SEASON_CHALLENGES = {
 }
 
 
-# Starting set of bonus/surprise challenges. These are seeded into the
-# BonusChallenge table the first time each season is used, but from then on
-# admins manage bonus challenges from the Admin panel (add new "surprise"
-# ones, deactivate old ones) without needing a code change.
-DEFAULT_BONUS_CHALLENGES = {
-    "fall": [
-        {"key": "fall-healthy-snack", "title": "Bring a Healthy Snack to Share"},
-        {"key": "fall-digital-detox-lunch", "title": "Digital Detox Lunch"},
-    ],
-    "winter": [
-        {"key": "winter-step-challenge", "title": "Step Challenge"},
-        {"key": "winter-hydration-week", "title": "Hydration Week"},
-    ],
-    "spring": [
-        {"key": "spring-kindness-week", "title": "Random Acts of Kindness Week"},
-        {"key": "spring-walk-bike", "title": "Walk or Bike to Campus Day"},
-    ],
-}
+# Starting set of bonus/surprise challenges. Unlike season challenges, the
+# same 6 bonus challenges are offered every season (only Season Challenges
+# vary by season) - each season simply tracks its own completions for them.
+# These are seeded into the BonusChallenge table the first time each season
+# is used, but from then on admins manage bonus challenges from the Admin
+# panel (add new "surprise" ones, deactivate old ones) without needing a
+# code change.
+BONUS_CHALLENGES = [
+    {"key": "bonus-healthy-snack", "title": "Bring a Healthy Snack to Share"},
+    {"key": "bonus-digital-detox-lunch", "title": "Digital Detox Lunch"},
+    {"key": "bonus-step-challenge", "title": "Step Challenge"},
+    {"key": "bonus-hydration-week", "title": "Hydration Week"},
+    {"key": "bonus-kindness-week", "title": "Random Acts of Kindness Week"},
+    {"key": "bonus-walk-bike", "title": "Walk or Bike to Campus Day"},
+]
+
+DEFAULT_BONUS_CHALLENGES = {season: BONUS_CHALLENGES for season in SEASONS}

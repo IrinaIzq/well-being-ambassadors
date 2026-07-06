@@ -101,7 +101,7 @@
             <div class="ranking-list">
                 {% for item in ranking %}
                 <div class="ranking-row">
-                    <span class="rank-badge">{{ loop.index }}</span>
+                    <span class="rank-badge {% if loop.index <= 3 %}rank-badge-{{ loop.index }}{% endif %}">{{ loop.index }}</span>
                     {% if item.team.logo_url %}
                     <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
                     {% else %}

@@ -442,6 +442,7 @@ h2 {
 .podium-col .logo-placeholder {
     width: 52px;
     height: 52px;
+    flex-shrink: 0;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #fff;
@@ -527,10 +528,23 @@ h2 {
     width: 34px;
     height: 34px;
     min-width: 34px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: var(--blue-700);
     color: #fff;
     font-weight: 900;
+}
+
+.rank-badge-1 {
+    background: linear-gradient(180deg, #f6d670, var(--gold));
+}
+
+.rank-badge-2 {
+    background: linear-gradient(180deg, #cfd8e3, var(--silver));
+}
+
+.rank-badge-3 {
+    background: linear-gradient(180deg, #e3b287, var(--bronze));
 }
 
 .ranking-row img,
@@ -539,6 +553,7 @@ h2 {
 .team-identity .logo-placeholder {
     width: 46px;
     height: 46px;
+    flex-shrink: 0;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--line);
@@ -553,7 +568,7 @@ h2 {
     font-size: 1.2rem;
 }
 
-.ranking-row div {
+.ranking-row div:not(.logo-placeholder) {
     flex: 1;
 }
 
@@ -726,5 +741,42 @@ small {
     .home-hero {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+/* ---------- Resources ("About us") header ---------- */
+
+.resources-heading {
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: nowrap;
+}
+
+.resources-title {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    margin-bottom: 0.5rem;
+}
+
+.eyebrow-below {
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.resources-wheel {
+    width: 260px;
+    max-width: 32vw;
+    height: auto;
+    flex-shrink: 0;
+}
+
+@media (max-width: 860px) {
+    .resources-heading {
+        flex-wrap: wrap;
+    }
+
+    .resources-wheel {
+        max-width: 220px;
+        margin: 0 auto;
     }
 }

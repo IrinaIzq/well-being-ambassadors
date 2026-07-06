@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="dashboard">
-    <div class="section-heading">
+    <div class="section-heading resources-heading">
         <div>
-            <p class="eyebrow">for Staff</p>
-            <h1>Well-Being Support</h1>
+            <h1 class="resources-title">Well-Being Resources</h1>
+            <p class="eyebrow eyebrow-below">for staff</p>
         </div>
+        <img class="resources-wheel" src="{{ url_for('static', filename='img/wb_wheel.png') }}" alt="Well-Being pillars wheel: Body Vitality, Mind Focus, Soul Purpose">
     </div>
 
     <h2>Learning</h2>
