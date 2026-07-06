@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="dashboard">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Welcome back{% if team %}, {{ team.name }}{% endif %}</p>
+            <h1>{{ seasons[season].name }} Season</h1>
+            <p class="muted">{{ seasons[season].period }}</p>
+        </div>
+        <div class="score-card">
+            <span>{{ days_left }}</span>
+            <p>days left in the Season</p>
+        </div>
+    </div>
+
+    <h2>Current Bonus Challenge{{ 's' if bonus_challenges|length != 1 else '' }}</h2>
+    <div class="bonus-grid">
+        {% for challenge in bonus_challenges %}
+        <article class="panel bonus-card">
+            <strong>{{ challenge.title }}</strong>
+            <span>{{ challenge.points }} points</span>
+        </article>
+        {% else %}
+        <p class="muted">No surprise bonus challenge right now — check back soon!</p>
+        {% endfor %}
+    </div>
+
+    <h2>Latest Announcements</h2>
+    <div class="admin-table panel">
+        {% for announcement in announcements %}
+        <article class="admin-team">
+            <strong>{{ announcement.title }}</strong>
+            <p>{{ announcement.body }}</p>
+            <small class="muted">{{ announcement.created_at.strftime('%d %b %Y') }}</small>
+        </article>
+        {% else %}
+        <p class="muted">No announcements yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if not team %}
+    <p><a class="button primary" href="{{ url_for('teams.create_team') }}">Create your team to join the Quest</a></p>
+    {% else %}
+    <p><a class="button ghost" href="{{ url_for('main.dashboard') }}">Go to My Team &amp; Challenges →</a></p>
+    {% endif %}
+</section>
+{% endblock %}
