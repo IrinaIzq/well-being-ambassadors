@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wellbeing Quest</title>
+    <title>Well-Being Ambassadors</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
 <body>
     {% if current_user.is_authenticated %}
     <header class="topbar">
-        <a class="brand" href="{{ url_for('main.home') }}">Wellbeing Quest</a>
+        <a class="brand" href="{{ url_for('main.home') }}">Well-Being Ambassadors</a>
         <nav>
             {% if current_user.is_admin() %}
             <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>

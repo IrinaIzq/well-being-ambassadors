@@ -20,6 +20,12 @@
         </div>
     </div>
 
+    {% if season_over %}
+    <div class="season-over-banner">
+        This season is over — go to <a href="{{ url_for('teams.settings') }}">Settings</a> and change the season to start the new challenges.
+    </div>
+    {% endif %}
+
     {% if announcements %}
     <div class="announce-strip">
         {% for announcement in announcements %}
@@ -44,11 +50,11 @@
                     <p>{{ challenge.description }}</p>
                 </div>
                 <label class="check-row">
-                    <input class="round-check" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()">
+                    <input class="round-check" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} {% if season_over %}disabled{% endif %} onchange="this.form.submit()">
                     Mark as completed
                 </label>
                 <label class="check-row">
-                    <input class="round-check" type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} onchange="this.form.submit()">
+                    <input class="round-check" type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} {% if season_over %}disabled{% endif %} onchange="this.form.submit()">
                     Proof photo sent
                 </label>
             </form>
@@ -65,7 +71,7 @@
             <strong>{{ challenge.title }}</strong>
             <span class="points-tag">{{ challenge.points }} points</span>
             <label class="check-row">
-                <input class="round-check" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()">
+                <input class="round-check round-check-sm" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} {% if season_over %}disabled{% endif %} onchange="this.form.submit()">
                 Mark as completed
             </label>
         </form>

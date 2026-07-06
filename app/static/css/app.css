@@ -361,20 +361,25 @@ h2 {
 
 .bonus-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.75rem;
 }
 
 .bonus-card {
     display: grid;
-    gap: 0.75rem;
-    border-radius: var(--radius-lg);
+    gap: 0.5rem;
+    padding: 1rem 0.85rem;
+    border-radius: var(--radius-md);
     border-color: var(--blue-200);
     background: var(--blue-100);
+    text-align: center;
+    justify-items: center;
 }
 
 .bonus-card strong {
     color: var(--blue-900);
+    font-size: 0.85rem;
+    line-height: 1.25;
 }
 
 .bonus-card span.points-tag {
@@ -383,9 +388,15 @@ h2 {
     background: var(--blue-700);
     color: #fff;
     font-weight: 800;
-    font-size: 0.85rem;
-    padding: 0.25rem 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.2rem 0.6rem;
     border-radius: var(--radius-pill);
+}
+
+.bonus-card .check-row {
+    font-size: 0.78rem;
+    justify-content: center;
+    text-align: left;
 }
 
 /* Round checkboxes */
@@ -404,6 +415,12 @@ h2 {
     margin: 0;
 }
 
+.round-check-sm {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+}
+
 .round-check:checked {
     background: var(--blue-700);
     border-color: var(--blue-700);
@@ -419,6 +436,21 @@ h2 {
     font-size: 0.85rem;
     font-weight: 900;
 }
+
+.round-check-sm:checked::after {
+    font-size: 0.65rem;
+}
+
+.round-check:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.check-row:has(.round-check:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 
 /* ---------- Podium (real, gold/silver/bronze) ---------- */
 
@@ -716,7 +748,6 @@ small {
     .auth-shell,
     .form-page,
     .pillar-grid,
-    .bonus-grid,
     .leaderboard-layout,
     .podium-real {
         grid-template-columns: 1fr;
@@ -725,6 +756,10 @@ small {
 
     .podium-real {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .bonus-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .form-grid,
@@ -741,6 +776,12 @@ small {
     .home-hero {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .bonus-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -779,4 +820,20 @@ small {
         max-width: 220px;
         margin: 0 auto;
     }
+}
+/* ---------- Season over banner ---------- */
+
+.season-over-banner {
+    background: var(--gold-bg);
+    border: 1px solid var(--gold);
+    color: var(--blue-900);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.season-over-banner a {
+    color: var(--blue-700);
+    text-decoration: underline;
 }

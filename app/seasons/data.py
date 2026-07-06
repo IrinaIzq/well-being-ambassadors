@@ -10,7 +10,7 @@ FALL_CHALLENGES = [
         "key": "fall-mindfulness-together",
         "pillar": "Mind",
         "title": "Mindfulness Together",
-        "description": "Attend a mindfulness session organised by the Center for Health & Well-being.",
+        "description": "Attend a guided meditation session organised by the Center for Health & Well-being.",
     },
     {
         "key": "fall-one-minute-pause",
