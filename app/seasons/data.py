@@ -1,7 +1,22 @@
 SEASONS = {
-    "fall": {"name": "Fall", "period": "October - December", "start": (10, 1), "end": (12, 31)},
-    "winter": {"name": "Winter", "period": "January - March", "start": (1, 1), "end": (3, 31)},
-    "spring": {"name": "Spring", "period": "April - June", "start": (4, 1), "end": (6, 30)},
+    "fall": {
+        "name": "Fall",
+        "period": "October - December",
+        "start": (9, 29),
+        "end": (12, 18),
+    },
+    "winter": {
+        "name": "Winter",
+        "period": "December - March",
+        "start": (12, 19),
+        "end": (3, 19),
+    },
+    "spring": {
+        "name": "Spring",
+        "period": "March - June",
+        "start": (3, 20),
+        "end": (6, 18),
+    },
 }
 
 

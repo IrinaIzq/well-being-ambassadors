@@ -361,42 +361,48 @@ h2 {
 
 .bonus-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
 
 .bonus-card {
     display: grid;
-    gap: 0.5rem;
-    padding: 1rem 0.85rem;
-    border-radius: var(--radius-md);
-    border-color: var(--blue-200);
-    background: var(--blue-100);
-    text-align: center;
+    align-content: space-between;
     justify-items: center;
+    gap: 1rem;
+
+    min-height: 220px;
+    padding: 1.5rem 1.2rem;
+
+    background: var(--blue-100);
+    border: 1px solid var(--blue-200);
+    border-radius: var(--radius-md);
+
+    text-align: center;
 }
 
 .bonus-card strong {
     color: var(--blue-900);
-    font-size: 0.85rem;
-    line-height: 1.25;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.35;
 }
 
 .bonus-card span.points-tag {
     display: inline-block;
-    width: fit-content;
     background: var(--blue-700);
-    color: #fff;
+    color: white;
     font-weight: 800;
-    font-size: 0.72rem;
-    padding: 0.2rem 0.6rem;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.9rem;
     border-radius: var(--radius-pill);
 }
 
 .bonus-card .check-row {
-    font-size: 0.78rem;
     justify-content: center;
-    text-align: left;
+    font-size: 0.95rem;
+    text-align: center;
 }
 
 /* Round checkboxes */
@@ -759,7 +765,7 @@ small {
     }
 
     .bonus-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .form-grid,
@@ -781,7 +787,7 @@ small {
 
 @media (max-width: 560px) {
     .bonus-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
     }
 }
 
