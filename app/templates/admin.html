@@ -39,5 +39,84 @@
         <p>No teams joined this season yet.</p>
         {% endfor %}
     </div>
+
+    <h2>Bonus / Surprise Challenges — {{ seasons[season].name }}</h2>
+    <div class="admin-table panel">
+        {% for challenge in bonus_challenges %}
+        <article class="admin-team">
+            <div class="ranking-row">
+                <div>
+                    <strong>{{ challenge.title }}</strong>
+                    <small>{{ challenge.points }} points · {{ "Active" if challenge.active else "Inactive" }}</small>
+                </div>
+                <form method="post" action="{{ url_for('admin.toggle_bonus_challenge', challenge_id=challenge.id) }}">
+                    <button class="button ghost" type="submit">{{ "Deactivate" if challenge.active else "Activate" }}</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.delete_bonus_challenge', challenge_id=challenge.id) }}">
+                    <button class="button ghost" type="submit">Delete</button>
+                </form>
+            </div>
+        </article>
+        {% else %}
+        <p>No bonus challenges yet for this season.</p>
+        {% endfor %}
+    </div>
+    <form class="panel form-grid" method="post" action="{{ url_for('admin.create_bonus_challenge') }}">
+        <input type="hidden" name="season" value="{{ season }}">
+        <input type="text" name="title" placeholder="Surprise challenge title" required>
+        <input type="number" name="points" value="2" min="1" style="max-width:6rem">
+        <button class="button primary" type="submit">Launch surprise challenge</button>
+    </form>
+
+    <h2>Announcements</h2>
+    <div class="admin-table panel">
+        {% for announcement in announcements %}
+        <article class="admin-team">
+            <div class="ranking-row">
+                <div>
+                    <strong>{{ announcement.title }}</strong>
+                    <small>{{ announcement.created_at.strftime('%d %b %Y') }}</small>
+                </div>
+                <form method="post" action="{{ url_for('admin.delete_announcement', announcement_id=announcement.id) }}">
+                    <button class="button ghost" type="submit">Delete</button>
+                </form>
+            </div>
+            <p>{{ announcement.body }}</p>
+        </article>
+        {% else %}
+        <p>No announcements yet.</p>
+        {% endfor %}
+    </div>
+    <form class="panel form-grid" method="post" action="{{ url_for('admin.create_announcement') }}">
+        <input type="text" name="title" placeholder="Announcement title" required>
+        <textarea name="body" placeholder="Message shown on everyone's Home screen" required></textarea>
+        <button class="button primary" type="submit">Post announcement</button>
+    </form>
+
+    <h2>🌟 Hall of Fame</h2>
+    <div class="admin-table panel">
+        {% for entry in hall_of_fame_entries %}
+        <article class="admin-team">
+            <div class="ranking-row">
+                <div>
+                    <strong>{{ entry.year }} · {{ entry.category }}</strong>
+                    <small>{{ entry.team_name }}{% if entry.note %} — {{ entry.note }}{% endif %}</small>
+                </div>
+                <form method="post" action="{{ url_for('admin.delete_hall_of_fame_entry', entry_id=entry.id) }}">
+                    <button class="button ghost" type="submit">Delete</button>
+                </form>
+            </div>
+        </article>
+        {% else %}
+        <p>No Hall of Fame entries yet.</p>
+        {% endfor %}
+    </div>
+    <form class="panel form-grid" method="post" action="{{ url_for('admin.create_hall_of_fame_entry') }}">
+        <input type="number" name="year" placeholder="Year" required style="max-width:8rem">
+        <input type="text" name="category" placeholder="Category (e.g. Fall Season Champion)" required>
+        <input type="text" name="team_name" placeholder="Team name" required>
+        <input type="text" name="note" placeholder="Optional note">
+        <button class="button primary" type="submit">Add to Hall of Fame</button>
+    </form>
 </section>
 {% endblock %}
