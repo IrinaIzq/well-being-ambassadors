@@ -9,12 +9,15 @@
 <body>
     {% if current_user.is_authenticated %}
     <header class="topbar">
-        <a class="brand" href="{{ url_for('main.dashboard') }}">Wellbeing Quest</a>
+        <a class="brand" href="{{ url_for('main.home') }}">Wellbeing Quest</a>
         <nav>
             {% if current_user.is_admin() %}
             <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
             {% else %}
-            <a href="{{ url_for('main.dashboard') }}">Home</a>
+            <a href="{{ url_for('main.home') }}">Home</a>
+            <a href="{{ url_for('main.dashboard') }}">My Team</a>
+            <a href="{{ url_for('main.resources') }}">Resources</a>
+            <a href="{{ url_for('main.hall_of_fame') }}">Hall of Fame</a>
             <a href="{{ url_for('teams.settings') }}">Settings</a>
             {% endif %}
             <a href="{{ url_for('auth.logout') }}">Logout</a>
