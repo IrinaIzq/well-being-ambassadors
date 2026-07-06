@@ -23,7 +23,7 @@ def create_team():
     if current_user.is_admin():
         return redirect(url_for("admin.admin_dashboard"))
     if current_user.team is not None:
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     if request.method == "POST":
         members = member_rows_from_request()
@@ -47,7 +47,7 @@ def create_team():
         current_user.full_name = request.form["captain_name"].strip()
         db.session.commit()
         flash("Team created and joined to the season.", "success")
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     return render_template("team_create.html", seasons=SEASONS)
 
@@ -79,4 +79,11 @@ def settings():
         flash("Team settings updated.", "success")
         return redirect(url_for("teams.settings"))
 
-    return render_template("settings.html", team=team, seasons=SEASONS)
+    from app.main.routes import get_team_points
+
+    return render_template(
+        "settings.html",
+        team=team,
+        seasons=SEASONS,
+        points=get_team_points(team, team.current_season),
+    )

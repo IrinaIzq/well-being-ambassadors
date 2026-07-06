@@ -19,9 +19,11 @@
         {% for item in rows %}
         <article class="admin-team">
             <div class="ranking-row">
-                <span>#{{ loop.index }}</span>
+                <span class="rank-badge">{{ loop.index }}</span>
                 {% if item.team.logo_url %}
                 <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
+                {% else %}
+                <div class="logo-placeholder">{{ item.team.name[:1] }}</div>
                 {% endif %}
                 <div>
                     <strong>{{ item.team.name }}</strong>
@@ -37,6 +39,31 @@
         </article>
         {% else %}
         <p>No teams joined this season yet.</p>
+        {% endfor %}
+    </div>
+
+    <h2>🏆 Close Season — archive to Hall of Fame</h2>
+    <p class="muted">Freezes the current podium + ranking for {{ seasons[season].name }} and adds it permanently to the Hall of Fame.</p>
+    <form class="panel form-grid" method="post" action="{{ url_for('admin.close_season') }}">
+        <input type="hidden" name="season" value="{{ season }}">
+        <input type="number" name="year" value="{{ current_year }}" required style="max-width:8rem">
+        <button class="button primary" type="submit">Close {{ seasons[season].name }} {{ current_year }} &amp; archive</button>
+    </form>
+    <div class="admin-table panel" style="margin-top: 1rem;">
+        {% for result in season_results %}
+        <article class="admin-team">
+            <div class="ranking-row">
+                <div>
+                    <strong>{{ seasons[result.season].name }} {{ result.year }}</strong>
+                    <small>Archived {{ result.closed_at.strftime('%d %b %Y') }}</small>
+                </div>
+                <form method="post" action="{{ url_for('admin.delete_season_result', result_id=result.id) }}">
+                    <button class="button ghost" type="submit">Delete</button>
+                </form>
+            </div>
+        </article>
+        {% else %}
+        <p>No Seasons archived yet.</p>
         {% endfor %}
     </div>
 

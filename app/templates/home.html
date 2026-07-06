@@ -1,47 +1,123 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="dashboard">
-    <div class="section-heading">
-        <div>
-            <p class="eyebrow">Welcome back{% if team %}, {{ team.name }}{% endif %}</p>
+
+    <div class="home-hero">
+        <div class="welcome-block">
+            <p class="eyebrow">Welcome back, {{ team.name }}</p>
             <h1>{{ seasons[season].name }} Season</h1>
-            <p class="muted">{{ seasons[season].period }}</p>
+            <p class="welcome-sub">{{ seasons[season].period }}</p>
         </div>
-        <div class="score-card">
-            <span>{{ days_left }}</span>
-            <p>days left in the Season</p>
+        <div class="hero-stats">
+            <div class="hero-pill">
+                <span>{{ days_left }}</span>
+                <p>days left</p>
+            </div>
+            <div class="hero-pill">
+                <span>{{ points }}</span>
+                <p>team points</p>
+            </div>
         </div>
     </div>
 
-    <h2>Current Bonus Challenge{{ 's' if bonus_challenges|length != 1 else '' }}</h2>
+    {% if announcements %}
+    <div class="announce-strip">
+        {% for announcement in announcements %}
+        <div class="announce-card">
+            <strong>{{ announcement.title }}</strong>
+            <p class="muted">{{ announcement.body }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2>Season Challenges</h2>
+    <div class="pillar-grid">
+        {% for pillar, challenges in pillars.items() %}
+        <article class="panel pillar-card">
+            <h3>{{ pillar }}</h3>
+            {% for challenge in challenges %}
+            {% set completion = completion_map.get(challenge.key) %}
+            <form class="challenge-item" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
+                <div>
+                    <strong>{{ challenge.title }}</strong>
+                    <p>{{ challenge.description }}</p>
+                </div>
+                <label class="check-row">
+                    <input class="round-check" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()">
+                    Mark as completed
+                </label>
+                <label class="check-row">
+                    <input class="round-check" type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} onchange="this.form.submit()">
+                    Proof photo sent
+                </label>
+            </form>
+            {% endfor %}
+        </article>
+        {% endfor %}
+    </div>
+
+    <h2>Bonus Challenges</h2>
     <div class="bonus-grid">
         {% for challenge in bonus_challenges %}
-        <article class="panel bonus-card">
+        {% set completion = completion_map.get(challenge.key) %}
+        <form class="panel bonus-card" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
             <strong>{{ challenge.title }}</strong>
-            <span>{{ challenge.points }} points</span>
-        </article>
+            <span class="points-tag">{{ challenge.points }} points</span>
+            <label class="check-row">
+                <input class="round-check" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()">
+                Mark as completed
+            </label>
+        </form>
         {% else %}
-        <p class="muted">No surprise bonus challenge right now — check back soon!</p>
+        <p class="muted">No bonus challenges active right now — check back soon!</p>
         {% endfor %}
     </div>
 
-    <h2>Latest Announcements</h2>
-    <div class="admin-table panel">
-        {% for announcement in announcements %}
-        <article class="admin-team">
-            <strong>{{ announcement.title }}</strong>
-            <p>{{ announcement.body }}</p>
-            <small class="muted">{{ announcement.created_at.strftime('%d %b %Y') }}</small>
-        </article>
-        {% else %}
-        <p class="muted">No announcements yet.</p>
-        {% endfor %}
-    </div>
-
-    {% if not team %}
-    <p><a class="button primary" href="{{ url_for('teams.create_team') }}">Create your team to join the Quest</a></p>
-    {% else %}
-    <p><a class="button ghost" href="{{ url_for('main.dashboard') }}">Go to My Team &amp; Challenges →</a></p>
-    {% endif %}
+    <section class="leaderboard-layout">
+        <div>
+            <h2>Podium</h2>
+            <div class="panel">
+                <div class="podium-real">
+                    {% for item in ranking[:3] %}
+                    <div class="podium-col rank-{{ loop.index }}">
+                        {% if item.team.logo_url %}
+                        <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
+                        {% else %}
+                        <div class="logo-placeholder">{{ item.team.name[:1] }}</div>
+                        {% endif %}
+                        <strong>{{ item.team.name }}</strong>
+                        <small>{{ item.points }} pts</small>
+                        <div class="podium-bar">{{ ["🥇", "🥈", "🥉"][loop.index0] }}</div>
+                    </div>
+                    {% else %}
+                    <p class="muted">No teams yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2>Ranking</h2>
+            <div class="ranking-list">
+                {% for item in ranking %}
+                <div class="ranking-row">
+                    <span class="rank-badge">{{ loop.index }}</span>
+                    {% if item.team.logo_url %}
+                    <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
+                    {% else %}
+                    <div class="logo-placeholder">{{ item.team.name[:1] }}</div>
+                    {% endif %}
+                    <div>
+                        <strong>{{ item.team.name }}</strong>
+                        <small>{{ item.team.departments }}</small>
+                    </div>
+                    <b>{{ item.points }} pts</b>
+                </div>
+                {% else %}
+                <p class="muted">No ranking entries yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 </section>
 {% endblock %}

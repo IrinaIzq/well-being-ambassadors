@@ -1,10 +1,12 @@
+import json
+
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app.admin import admin_bp
 from app.extensions import db
-from app.main.routes import ensure_default_bonus_challenges, get_team_points
-from app.models import Announcement, BonusChallenge, HallOfFameEntry, Team
+from app.main.routes import ensure_default_bonus_challenges, get_team_points, ranked_teams
+from app.models import Announcement, BonusChallenge, HallOfFameEntry, SeasonResult, Team
 from app.seasons.data import SEASONS
 
 
@@ -16,7 +18,9 @@ def admin_only():
 @login_required
 def admin_dashboard():
     if not current_user.is_admin():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
+
+    from datetime import date
 
     season = request.args.get("season", "fall")
     ensure_default_bonus_challenges(season)
@@ -33,10 +37,14 @@ def admin_dashboard():
         rows=rows,
         season=season,
         seasons=SEASONS,
+        current_year=date.today().year,
         bonus_challenges=BonusChallenge.query.filter_by(season=season).order_by(BonusChallenge.created_at.asc()).all(),
         announcements=Announcement.query.order_by(Announcement.created_at.desc()).all(),
         hall_of_fame_entries=HallOfFameEntry.query.order_by(
             HallOfFameEntry.year.desc(), HallOfFameEntry.category.asc()
+        ).all(),
+        season_results=SeasonResult.query.order_by(
+            SeasonResult.year.desc(), SeasonResult.closed_at.desc()
         ).all(),
     )
 
@@ -47,7 +55,7 @@ def admin_dashboard():
 @login_required
 def create_bonus_challenge():
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     season = request.form["season"]
     title = request.form["title"].strip()
@@ -73,7 +81,7 @@ def create_bonus_challenge():
 @login_required
 def toggle_bonus_challenge(challenge_id):
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     challenge = BonusChallenge.query.get_or_404(challenge_id)
     challenge.active = not challenge.active
@@ -85,7 +93,7 @@ def toggle_bonus_challenge(challenge_id):
 @login_required
 def delete_bonus_challenge(challenge_id):
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     challenge = BonusChallenge.query.get_or_404(challenge_id)
     season = challenge.season
@@ -100,7 +108,7 @@ def delete_bonus_challenge(challenge_id):
 @login_required
 def create_announcement():
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     title = request.form["title"].strip()
     body = request.form["body"].strip()
@@ -118,7 +126,7 @@ def create_announcement():
 @login_required
 def delete_announcement(announcement_id):
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     announcement = Announcement.query.get_or_404(announcement_id)
     db.session.delete(announcement)
@@ -132,7 +140,7 @@ def delete_announcement(announcement_id):
 @login_required
 def create_hall_of_fame_entry():
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     year = request.form.get("year", "").strip()
     category = request.form.get("category", "").strip()
@@ -153,9 +161,51 @@ def create_hall_of_fame_entry():
 @login_required
 def delete_hall_of_fame_entry(entry_id):
     if not admin_only():
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
 
     entry = HallOfFameEntry.query.get_or_404(entry_id)
     db.session.delete(entry)
+    db.session.commit()
+    return redirect(url_for("admin.admin_dashboard"))
+
+
+# ---- Season results archive (feeds the Hall of Fame podium history) --------------
+
+@admin_bp.route("/season-results/close", methods=["POST"])
+@login_required
+def close_season():
+    if not admin_only():
+        return redirect(url_for("main.home"))
+
+    season = request.form["season"]
+    year = request.form.get("year", "").strip()
+    if not year.isdigit():
+        flash("Give the season edition a year.", "danger")
+        return redirect(url_for("admin.admin_dashboard", season=season))
+
+    ranking = ranked_teams(season)
+    snapshot = [
+        {
+            "team_name": item["team"].name,
+            "logo_url": item["team"].logo_url,
+            "points": item["points"],
+        }
+        for item in ranking
+    ]
+
+    db.session.add(SeasonResult(season=season, year=int(year), ranking_json=json.dumps(snapshot)))
+    db.session.commit()
+    flash(f"{SEASONS[season]['name']} {year} archived to the Hall of Fame.", "success")
+    return redirect(url_for("admin.admin_dashboard", season=season))
+
+
+@admin_bp.route("/season-results/<int:result_id>/delete", methods=["POST"])
+@login_required
+def delete_season_result(result_id):
+    if not admin_only():
+        return redirect(url_for("main.home"))
+
+    result = SeasonResult.query.get_or_404(result_id)
+    db.session.delete(result)
     db.session.commit()
     return redirect(url_for("admin.admin_dashboard"))

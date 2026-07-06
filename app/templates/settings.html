@@ -1,13 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="form-page">
-    <div>
-        <p class="eyebrow">Team settings</p>
-        <h1>{{ team.name }}</h1>
-        <p class="lede">Current season: {{ seasons[team.current_season].name }}. Update members, departments, logo, or join a different season.</p>
+<section class="dashboard">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Team settings</p>
+            <h1>{{ team.name }}</h1>
+        </div>
     </div>
 
-    <form class="panel form-grid" method="post">
+    <div class="settings-header">
+        <div class="stat">
+            <span>{{ team.name }}</span>
+            <p>Team</p>
+        </div>
+        <div class="stat">
+            <span>{{ points }}</span>
+            <p>Points</p>
+        </div>
+        <div class="stat">
+            <span>{{ seasons[team.current_season].name }}</span>
+            <p>Current season</p>
+        </div>
+    </div>
+
+    <form class="panel settings-form" method="post">
         <label>Team name <input name="team_name" required value="{{ team.name }}"></label>
         <label>Department(s) <input name="departments" required value="{{ team.departments }}"></label>
         <label>Captain name <input name="captain_name" required value="{{ team.captain.full_name }}"></label>

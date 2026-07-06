@@ -122,3 +122,15 @@ class HallOfFameEntry(db.Model):
     team_name = db.Column(db.String(150), nullable=False)
     note = db.Column(db.String(300))
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+class SeasonResult(db.Model):
+    """A frozen snapshot of a Season's final podium + full ranking, captured
+    when an admin closes a Season. Powers the Hall of Fame's season-by-season
+    history."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    season = db.Column(db.String(20), nullable=False)  # fall / winter / spring
+    year = db.Column(db.Integer, nullable=False)
+    ranking_json = db.Column(db.Text, nullable=False)  # [{"team_name","logo_url","points"}, ...]
+    closed_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

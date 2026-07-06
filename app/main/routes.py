@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.main import main_bp
-from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, Team
+from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team
 from app.seasons.data import DEFAULT_BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
 from app.seasons.utils import days_remaining_in_season
 
@@ -76,8 +76,20 @@ def home():
         return redirect(url_for("admin.admin_dashboard"))
 
     team = current_user.team
-    season = team.current_season if team else "fall"
+    if team is None:
+        return redirect(url_for("teams.create_team"))
+
+    season = team.current_season
     ensure_default_bonus_challenges(season)
+
+    completion_map = {
+        completion.challenge_key: completion
+        for completion in team.completions
+        if completion.season == season
+    }
+    pillars = {"Body": [], "Mind": [], "Soul": []}
+    for challenge in SEASON_CHALLENGES[season]:
+        pillars[challenge["pillar"]].append(challenge)
 
     return render_template(
         "home.html",
@@ -86,8 +98,19 @@ def home():
         seasons=SEASONS,
         days_left=days_remaining_in_season(season),
         announcements=Announcement.query.order_by(Announcement.created_at.desc()).limit(5).all(),
+        pillars=pillars,
         bonus_challenges=get_active_bonus_challenges(season),
+        completion_map=completion_map,
+        points=get_team_points(team, season),
+        ranking=ranked_teams(season),
     )
+
+
+# Old bookmarks/links to /dashboard still work.
+@main_bp.route("/dashboard")
+@login_required
+def dashboard():
+    return redirect(url_for("main.home"))
 
 
 @main_bp.route("/resources")
@@ -99,6 +122,14 @@ def resources():
 @main_bp.route("/hall-of-fame")
 @login_required
 def hall_of_fame():
+    import json
+
+    season_results = SeasonResult.query.order_by(
+        SeasonResult.year.desc(), SeasonResult.closed_at.desc()
+    ).all()
+    for result in season_results:
+        result.ranking = json.loads(result.ranking_json)
+
     entries = HallOfFameEntry.query.order_by(
         HallOfFameEntry.year.desc(), HallOfFameEntry.category.asc()
     ).all()
@@ -106,39 +137,11 @@ def hall_of_fame():
     for entry in entries:
         entries_by_year.setdefault(entry.year, []).append(entry)
 
-    return render_template("hall_of_fame.html", entries_by_year=entries_by_year)
-
-
-@main_bp.route("/dashboard")
-@login_required
-def dashboard():
-    if current_user.is_admin():
-        return redirect(url_for("admin.admin_dashboard"))
-
-    team = current_user.team
-    if team is None:
-        return redirect(url_for("teams.create_team"))
-
-    season = team.current_season
-    completion_map = {
-        completion.challenge_key: completion
-        for completion in team.completions
-        if completion.season == season
-    }
-    pillars = {"Body": [], "Mind": [], "Soul": []}
-    for challenge in SEASON_CHALLENGES[season]:
-        pillars[challenge["pillar"]].append(challenge)
-
     return render_template(
-        "dashboard.html",
-        team=team,
-        season=season,
+        "hall_of_fame.html",
+        season_results=season_results,
+        entries_by_year=entries_by_year,
         seasons=SEASONS,
-        pillars=pillars,
-        bonus_challenges=get_active_bonus_challenges(season),
-        completion_map=completion_map,
-        points=get_team_points(team, season),
-        ranking=ranked_teams(season),
     )
 
 
@@ -167,4 +170,4 @@ def update_challenge(challenge_key):
     completion.proof_sent = request.form.get("proof_sent") == "on"
     db.session.commit()
 
-    return redirect(url_for("main.dashboard"))
+    return redirect(url_for("main.home"))

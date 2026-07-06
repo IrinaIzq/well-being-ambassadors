@@ -8,8 +8,55 @@
         </div>
     </div>
 
+    {% for result in season_results %}
+    <div class="panel season-result-block">
+        <div class="section-heading">
+            <h2>{{ seasons[result.season].name }} {{ result.year }}</h2>
+        </div>
+
+        <div class="leaderboard-layout">
+            <div>
+                <div class="podium-real">
+                    {% for item in result.ranking[:3] %}
+                    <div class="podium-col rank-{{ loop.index }}">
+                        {% if item.logo_url %}
+                        <img src="{{ item.logo_url }}" alt="{{ item.team_name }} logo">
+                        {% else %}
+                        <div class="logo-placeholder">{{ item.team_name[:1] }}</div>
+                        {% endif %}
+                        <strong>{{ item.team_name }}</strong>
+                        <small>{{ item.points }} pts</small>
+                        <div class="podium-bar">{{ ["🥇", "🥈", "🥉"][loop.index0] }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="ranking-list">
+                {% for item in result.ranking %}
+                <div class="ranking-row">
+                    <span class="rank-badge">{{ loop.index }}</span>
+                    {% if item.logo_url %}
+                    <img src="{{ item.logo_url }}" alt="{{ item.team_name }} logo">
+                    {% else %}
+                    <div class="logo-placeholder">{{ item.team_name[:1] }}</div>
+                    {% endif %}
+                    <div>
+                        <strong>{{ item.team_name }}</strong>
+                    </div>
+                    <b>{{ item.points }} pts</b>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="muted">No Seasons archived yet — once an admin closes a Season, its podium and ranking will appear here.</p>
+    {% endfor %}
+
+    {% if entries_by_year %}
+    <h2>Special Awards</h2>
     {% for year, entries in entries_by_year.items() %}
-    <h2>{{ year }}</h2>
+    <h3>{{ year }}</h3>
     <div class="admin-table panel">
         {% for entry in entries %}
         <article class="admin-team">
@@ -25,8 +72,7 @@
         </article>
         {% endfor %}
     </div>
-    {% else %}
-    <p class="muted">No Hall of Fame entries yet — the first Season champions will appear here.</p>
     {% endfor %}
+    {% endif %}
 </section>
 {% endblock %}
