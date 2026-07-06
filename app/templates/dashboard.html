@@ -46,9 +46,11 @@
         {% set completion = completion_map.get(challenge.key) %}
         <form class="panel bonus-card" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
             <strong>{{ challenge.title }}</strong>
-            <span>2 points</span>
+            <span>{{ challenge.points }} points</span>
             <label><input type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()"> Mark as completed</label>
         </form>
+        {% else %}
+        <p class="muted">No bonus challenges active right now — check back soon!</p>
         {% endfor %}
     </div>
 
