@@ -3,20 +3,47 @@ from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.main import main_bp
-from app.models import ChallengeCompletion, Team
-from app.seasons.data import BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
+from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, Team
+from app.seasons.data import DEFAULT_BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
+from app.seasons.utils import days_remaining_in_season
+
+
+def get_active_bonus_challenges(season):
+    """Bonus/surprise challenges currently active for a season, seeding the
+    starter set the first time a season is touched."""
+    ensure_default_bonus_challenges(season)
+    return (
+        BonusChallenge.query.filter_by(season=season, active=True)
+        .order_by(BonusChallenge.created_at.asc())
+        .all()
+    )
+
+
+def ensure_default_bonus_challenges(season):
+    if BonusChallenge.query.filter_by(season=season).first() is not None:
+        return
+    for challenge in DEFAULT_BONUS_CHALLENGES.get(season, []):
+        db.session.add(BonusChallenge(season=season, key=challenge["key"], title=challenge["title"]))
+    db.session.commit()
 
 
 def get_team_points(team, season):
     points = 0
-    bonus_keys = {challenge["key"] for challenge in BONUS_CHALLENGES[season]}
+    bonus_keys = {
+        challenge.key
+        for challenge in BonusChallenge.query.filter_by(season=season).all()
+    }
+    bonus_points_by_key = {
+        challenge.key: challenge.points
+        for challenge in BonusChallenge.query.filter_by(season=season).all()
+    }
 
     for completion in team.completions:
         if completion.season != season:
             continue
         if completion.challenge_key in bonus_keys:
             if completion.completed:
-                points += 2
+                points += bonus_points_by_key[completion.challenge_key]
             continue
         if completion.completed:
             points += 1
@@ -38,8 +65,48 @@ def ranked_teams(season):
 @main_bp.route("/")
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for("main.dashboard"))
+        return redirect(url_for("main.home"))
     return redirect(url_for("auth.login"))
+
+
+@main_bp.route("/home")
+@login_required
+def home():
+    if current_user.is_admin():
+        return redirect(url_for("admin.admin_dashboard"))
+
+    team = current_user.team
+    season = team.current_season if team else "fall"
+    ensure_default_bonus_challenges(season)
+
+    return render_template(
+        "home.html",
+        team=team,
+        season=season,
+        seasons=SEASONS,
+        days_left=days_remaining_in_season(season),
+        announcements=Announcement.query.order_by(Announcement.created_at.desc()).limit(5).all(),
+        bonus_challenges=get_active_bonus_challenges(season),
+    )
+
+
+@main_bp.route("/resources")
+@login_required
+def resources():
+    return render_template("resources.html")
+
+
+@main_bp.route("/hall-of-fame")
+@login_required
+def hall_of_fame():
+    entries = HallOfFameEntry.query.order_by(
+        HallOfFameEntry.year.desc(), HallOfFameEntry.category.asc()
+    ).all()
+    entries_by_year = {}
+    for entry in entries:
+        entries_by_year.setdefault(entry.year, []).append(entry)
+
+    return render_template("hall_of_fame.html", entries_by_year=entries_by_year)
 
 
 @main_bp.route("/dashboard")
@@ -68,7 +135,7 @@ def dashboard():
         season=season,
         seasons=SEASONS,
         pillars=pillars,
-        bonus_challenges=BONUS_CHALLENGES[season],
+        bonus_challenges=get_active_bonus_challenges(season),
         completion_map=completion_map,
         points=get_team_points(team, season),
         ranking=ranked_teams(season),
