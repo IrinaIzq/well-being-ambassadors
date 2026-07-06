@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="dashboard">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Quick access</p>
+            <h1>Wellbeing Resources</h1>
+        </div>
+    </div>
+
+    <div class="pillar-grid">
+        <article class="panel pillar-card">
+            <h3>🧠 Mind</h3>
+            <div class="challenge-row">
+                <div>
+                    <strong>Mindfulness sessions</strong>
+                    <p>Schedule and book a spot in the Center for Health &amp; Well-being's mindfulness sessions.</p>
+                </div>
+            </div>
+            <div class="challenge-row">
+                <div>
+                    <strong>Workshops</strong>
+                    <p>Upcoming wellbeing and mental health workshops open to all staff.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="panel pillar-card">
+            <h3>💪 Body</h3>
+            <div class="challenge-row">
+                <div>
+                    <strong>Athletic Center timetable</strong>
+                    <p>Class schedules and facility hours at the Athletic Center.</p>
+                </div>
+            </div>
+            <div class="challenge-row">
+                <div>
+                    <strong>Center for Health &amp; Well-being activities</strong>
+                    <p>Full calendar of physical wellbeing activities and events.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="panel pillar-card">
+            <h3>❤️ Soul</h3>
+            <div class="challenge-row">
+                <div>
+                    <strong>Wellbeing resources &amp; useful links</strong>
+                    <p>Guides, articles and support resources curated by the Center for Health &amp; Well-being.</p>
+                </div>
+            </div>
+            <div class="challenge-row">
+                <div>
+                    <strong>Registration pages</strong>
+                    <p>Sign up for upcoming Season activities and events.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <p class="muted">
+        Note for admins: the links on this page are placeholders. Add the
+        real URLs for your Center for Health &amp; Well-being, Athletic
+        Center and registration pages directly in
+        <code>app/templates/resources.html</code>.
+    </p>
+</section>
+{% endblock %}
