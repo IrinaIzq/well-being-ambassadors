@@ -1,51 +1,20 @@
-from flask import Flask
+from flask import redirect, request, url_for
+from flask_login import current_user, login_required
 
-from app.config import Config
-from app.extensions import db, login_manager, mail, migrate
-
-
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
-    db.init_app(app)
-    login_manager.init_app(app)
-    mail.init_app(app)
-    migrate.init_app(app, db)
-
-    from app import models
-    from app.admin.routes import admin_bp
-    from app.auth.routes import auth_bp
-    from app.main.routes import main_bp
-    from app.seasons.routes import seasons_bp
-    from app.teams.routes import teams_bp
-
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(main_bp)
-    app.register_blueprint(teams_bp, url_prefix="/teams")
-    app.register_blueprint(seasons_bp, url_prefix="/seasons")
-    app.register_blueprint(admin_bp, url_prefix="/admin")
-
-    with app.app_context():
-        db.create_all()
-        ensure_admin_user(app)
-
-    return app
+from app.extensions import db
+from app.seasons import seasons_bp
+from app.seasons.data import SEASONS
 
 
-def ensure_admin_user(app):
-    from app.models import User
+@seasons_bp.route("/change", methods=["POST"])
+@login_required
+def change_season():
+    if current_user.team is None:
+        return redirect(url_for("teams.create_team"))
 
-    admin = User.query.filter_by(email=app.config["ADMIN_EMAIL"].lower()).first()
-    if admin:
-        return
+    season = request.form.get("season")
+    if season in SEASONS:
+        current_user.team.current_season = season
+        db.session.commit()
 
-    admin = User(
-        full_name="Wellbeing Quest Admin",
-        email=app.config["ADMIN_EMAIL"].lower(),
-        role="admin",
-        email_verified=True,
-    )
-    admin.set_password(app.config["ADMIN_PASSWORD"])
-    db.session.add(admin)
-    db.session.commit()
+    return redirect(url_for("teams.settings"))
