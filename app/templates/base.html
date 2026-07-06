@@ -1,96 +1,42 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="dashboard">
-    <div class="team-hero">
-        <div class="team-identity">
-            {% if team.logo_url %}
-            <img src="{{ team.logo_url }}" alt="{{ team.name }} logo">
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wellbeing Quest</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('main.home') }}">Wellbeing Quest</a>
+        <nav>
+            {% if current_user.is_admin() %}
+            <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
             {% else %}
-            <div class="logo-placeholder">{{ team.name[:1] }}</div>
+            <a href="{{ url_for('main.home') }}">Home</a>
+            <a href="{{ url_for('main.dashboard') }}">My Team</a>
+            <a href="{{ url_for('main.resources') }}">Resources</a>
+            <a href="{{ url_for('main.hall_of_fame') }}">Hall of Fame</a>
+            <a href="{{ url_for('teams.settings') }}">Settings</a>
             {% endif %}
-            <div>
-                <p class="eyebrow">{{ seasons[season].name }} Season</p>
-                <h1>{{ team.name }}</h1>
-                <p>{{ team.departments }} · Captain: {{ team.captain.full_name }} · {{ team.member_count }} members</p>
-            </div>
-        </div>
-        <div class="score-card">
-            <span>{{ points }}</span>
-            <p>points</p>
-        </div>
-    </div>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+    </header>
+    {% endif %}
 
-    <h2>Season Challenges</h2>
-    <div class="pillar-grid">
-        {% for pillar, challenges in pillars.items() %}
-        <article class="panel pillar-card">
-            <h3>{{ pillar }}</h3>
-            {% for challenge in challenges %}
-            {% set completion = completion_map.get(challenge.key) %}
-            <form class="challenge-row" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
-                <div>
-                    <strong>{{ challenge.title }}</strong>
-                    <p>{{ challenge.description }}</p>
-                </div>
-                <label><input type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()"> Mark as completed</label>
-                <label><input type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} onchange="this.form.submit()"> Proof photo sent</label>
-            </form>
-            {% endfor %}
-        </article>
-        {% endfor %}
-    </div>
-
-    <h2>Bonus Challenges</h2>
-    <div class="bonus-grid">
-        {% for challenge in bonus_challenges %}
-        {% set completion = completion_map.get(challenge.key) %}
-        <form class="panel bonus-card" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
-            <strong>{{ challenge.title }}</strong>
-            <span>{{ challenge.points }} points</span>
-            <label><input type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} onchange="this.form.submit()"> Mark as completed</label>
-        </form>
-        {% else %}
-        <p class="muted">No bonus challenges active right now — check back soon!</p>
-        {% endfor %}
-    </div>
-
-    <section class="leaderboard-layout">
-        <div>
-            <h2>Podium</h2>
-            <div class="podium">
-                {% for item in ranking[:3] %}
-                <div class="podium-place place-{{ loop.index }}">
-                    {% if item.team.logo_url %}
-                    <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
-                    {% endif %}
-                    <strong>#{{ loop.index }} {{ item.team.name }}</strong>
-                    <span>{{ item.points }} pts</span>
-                </div>
-                {% else %}
-                <p class="muted">No teams yet.</p>
+    <main class="page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-list">
+                {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
             </div>
-        </div>
-        <div>
-            <h2>Ranking</h2>
-            <div class="ranking-list">
-                {% for item in ranking %}
-                <div class="ranking-row">
-                    <span>#{{ loop.index }}</span>
-                    {% if item.team.logo_url %}
-                    <img src="{{ item.team.logo_url }}" alt="{{ item.team.name }} logo">
-                    {% endif %}
-                    <div>
-                        <strong>{{ item.team.name }}</strong>
-                        <small>{{ item.team.departments }}</small>
-                    </div>
-                    <b>{{ item.points }} pts</b>
-                </div>
-                {% else %}
-                <p class="muted">No ranking entries yet.</p>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-</section>
-{% endblock %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
