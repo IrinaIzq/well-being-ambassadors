@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="dashboard">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Forever remembered</p>
+            <h1>🌟 Hall of Fame</h1>
+        </div>
+    </div>
+
+    {% for year, entries in entries_by_year.items() %}
+    <h2>{{ year }}</h2>
+    <div class="admin-table panel">
+        {% for entry in entries %}
+        <article class="admin-team">
+            <div class="ranking-row">
+                <div>
+                    <strong>{{ entry.category }}</strong>
+                    <small>{{ entry.team_name }}</small>
+                </div>
+            </div>
+            {% if entry.note %}
+            <p class="muted">{{ entry.note }}</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No Hall of Fame entries yet — the first Season champions will appear here.</p>
+    {% endfor %}
+</section>
+{% endblock %}
