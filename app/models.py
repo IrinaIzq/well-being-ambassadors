@@ -82,3 +82,43 @@ class ChallengeCompletion(db.Model):
     __table_args__ = (
         db.UniqueConstraint("team_id", "season", "challenge_key", name="uq_team_season_challenge"),
     )
+
+
+class BonusChallenge(db.Model):
+    """A surprise/bonus challenge for a season. Admin-managed so new ones
+    can be launched without touching code, per the "one or two surprise
+    challenges per Season" rule."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    season = db.Column(db.String(20), nullable=False)
+    key = db.Column(db.String(80), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    points = db.Column(db.Integer, nullable=False, default=2)
+    active = db.Column(db.Boolean, nullable=False, default=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    __table_args__ = (
+        db.UniqueConstraint("season", "key", name="uq_bonus_season_key"),
+    )
+
+
+class Announcement(db.Model):
+    """Short messages shown on the Home screen (e.g. "New Bonus Challenge
+    available!", reminders, deadlines)."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+class HallOfFameEntry(db.Model):
+    """A permanent record recognising a past Season winner or annual award
+    recipient. Managed manually by admins."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(150), nullable=False)  # e.g. "Fall Season Champion", "Kindness Award"
+    team_name = db.Column(db.String(150), nullable=False)
+    note = db.Column(db.String(300))
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

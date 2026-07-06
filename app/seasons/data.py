@@ -1,7 +1,7 @@
 SEASONS = {
-    "fall": {"name": "Fall", "period": "October - December"},
-    "winter": {"name": "Winter", "period": "January - March"},
-    "spring": {"name": "Spring", "period": "April - June"},
+    "fall": {"name": "Fall", "period": "October - December", "start": (10, 1), "end": (12, 31)},
+    "winter": {"name": "Winter", "period": "January - March", "start": (1, 1), "end": (3, 31)},
+    "spring": {"name": "Spring", "period": "April - June", "start": (4, 1), "end": (6, 30)},
 }
 
 
@@ -52,7 +52,11 @@ SEASON_CHALLENGES = {
 }
 
 
-BONUS_CHALLENGES = {
+# Starting set of bonus/surprise challenges. These are seeded into the
+# BonusChallenge table the first time each season is used, but from then on
+# admins manage bonus challenges from the Admin panel (add new "surprise"
+# ones, deactivate old ones) without needing a code change.
+DEFAULT_BONUS_CHALLENGES = {
     "fall": [
         {"key": "fall-healthy-snack", "title": "Bring a Healthy Snack to Share"},
         {"key": "fall-digital-detox-lunch", "title": "Digital Detox Lunch"},
