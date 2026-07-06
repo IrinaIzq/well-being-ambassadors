@@ -2,7 +2,7 @@ SEASONS = {
     "fall": {
         "name": "Fall",
         "period": "October - December",
-        "start": (9, 29),
+        "start": (7, 5),
         "end": (12, 18),
     },
     "winter": {
