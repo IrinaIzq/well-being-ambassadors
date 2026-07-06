@@ -1,11 +1,11 @@
-from flask import redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.main import main_bp
 from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team
 from app.seasons.data import DEFAULT_BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
-from app.seasons.utils import days_remaining_in_season
+from app.seasons.utils import days_remaining_in_season, season_is_over
 
 
 def get_active_bonus_challenges(season):
@@ -20,11 +20,21 @@ def get_active_bonus_challenges(season):
 
 
 def ensure_default_bonus_challenges(season):
-    if BonusChallenge.query.filter_by(season=season).first() is not None:
-        return
+    """Seed any bonus challenges from the shared default set that this
+    season doesn't have yet (matched by key). Safe to call every time: it
+    won't duplicate existing ones, and it will backfill new challenges added
+    to the shared list for seasons that were already touched before."""
+    existing_keys = {
+        challenge.key for challenge in BonusChallenge.query.filter_by(season=season).all()
+    }
+    added = False
     for challenge in DEFAULT_BONUS_CHALLENGES.get(season, []):
+        if challenge["key"] in existing_keys:
+            continue
         db.session.add(BonusChallenge(season=season, key=challenge["key"], title=challenge["title"]))
-    db.session.commit()
+        added = True
+    if added:
+        db.session.commit()
 
 
 def get_team_points(team, season):
@@ -81,6 +91,7 @@ def home():
 
     season = team.current_season
     ensure_default_bonus_challenges(season)
+    season_over = season_is_over(season)
 
     completion_map = {
         completion.challenge_key: completion
@@ -96,7 +107,8 @@ def home():
         team=team,
         season=season,
         seasons=SEASONS,
-        days_left=days_remaining_in_season(season),
+        days_left=0 if season_over else days_remaining_in_season(season),
+        season_over=season_over,
         announcements=Announcement.query.order_by(Announcement.created_at.desc()).limit(5).all(),
         pillars=pillars,
         bonus_challenges=get_active_bonus_challenges(season),
@@ -151,6 +163,10 @@ def update_challenge(challenge_key):
     team = current_user.team
     if team is None:
         return redirect(url_for("teams.create_team"))
+
+    if season_is_over(team.current_season):
+        flash("This season is over — go to Settings and start the next season to keep playing.", "warning")
+        return redirect(url_for("main.home"))
 
     completion = ChallengeCompletion.query.filter_by(
         team_id=team.id,
