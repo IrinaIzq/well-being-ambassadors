@@ -31,7 +31,7 @@ def ensure_default_bonus_challenges(season):
     for challenge in DEFAULT_BONUS_CHALLENGES.get(season, []):
         if challenge["key"] in existing_keys:
             continue
-        db.session.add(BonusChallenge(season=season, key=challenge["key"], title=challenge["title"]))
+        db.session.add(BonusChallenge(season=season, key=challenge["key"], title=challenge["title"], description=challenge["description"]))
         added = True
     if added:
         db.session.commit()

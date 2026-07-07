@@ -93,6 +93,7 @@ class BonusChallenge(db.Model):
     season = db.Column(db.String(20), nullable=False)
     key = db.Column(db.String(80), nullable=False)
     title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=False)
     points = db.Column(db.Integer, nullable=False, default=2)
     active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

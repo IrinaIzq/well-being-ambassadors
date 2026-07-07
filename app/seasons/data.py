@@ -153,12 +153,12 @@ SEASON_CHALLENGES = {
 # panel (add new "surprise" ones, deactivate old ones) without needing a
 # code change.
 BONUS_CHALLENGES = [
-    {"key": "bonus-healthy-snack", "title": "Bring a Healthy Snack to Share"},
-    {"key": "bonus-digital-detox-lunch", "title": "Digital Detox Lunch"},
-    {"key": "bonus-step-challenge", "title": "Step Challenge"},
-    {"key": "bonus-hydration-week", "title": "Hydration Week"},
-    {"key": "bonus-kindness-week", "title": "Random Acts of Kindness Week"},
-    {"key": "bonus-walk-bike", "title": "Walk or Bike to Campus Day"},
+    {"key": "bonus-healthy-snack", "title": "Bring a Healthy Snack to Share", "description": "Bring a healthy snack to share with your team."},
+    {"key": "bonus-digital-detox-lunch", "title": "Digital Detox Lunch", "description": "Take a break from digital devices during your lunch break."},
+    {"key": "bonus-step-challenge", "title": "Step Challenge", "description": "Walk or run for at least 30 minutes each day."},
+    {"key": "bonus-hydration-week", "title": "Hydration Week", "description": "Drink at least 8 glasses of water per day."},
+    {"key": "bonus-kindness-week", "title": "Random Acts of Kindness Week", "description": "Perform at least 5 random acts of kindness each day."},
+    {"key": "bonus-walk-bike", "title": "Walk or Bike to Campus Day", "description": "Choose to walk or bike to campus instead of taking the bus or driving."},
 ]
 
 DEFAULT_BONUS_CHALLENGES = {season: BONUS_CHALLENGES for season in SEASONS}

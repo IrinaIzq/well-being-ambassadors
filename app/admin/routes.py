@@ -59,11 +59,12 @@ def create_bonus_challenge():
 
     season = request.form["season"]
     title = request.form["title"].strip()
+    description = request.form["description"].strip()
     points = request.form.get("points", "2").strip() or "2"
     key = request.form.get("key", "").strip() or title.lower().replace(" ", "-")[:70]
 
-    if not title:
-        flash("Give the bonus challenge a title.", "danger")
+    if not title or not description:
+        flash("Give the bonus challenge a title and description.", "danger")
         return redirect(url_for("admin.admin_dashboard", season=season))
 
     existing = BonusChallenge.query.filter_by(season=season, key=key).first()
@@ -71,7 +72,7 @@ def create_bonus_challenge():
         flash("A bonus challenge with that key already exists for this season.", "danger")
         return redirect(url_for("admin.admin_dashboard", season=season))
 
-    db.session.add(BonusChallenge(season=season, key=key, title=title, points=int(points)))
+    db.session.add(BonusChallenge(season=season, key=key, title=title, description=description,points=int(points)))
     db.session.commit()
     flash("Surprise challenge launched!", "success")
     return redirect(url_for("admin.admin_dashboard", season=season))

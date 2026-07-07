@@ -88,7 +88,15 @@
         {% for challenge in bonus_challenges %}
         {% set completion = completion_map.get(challenge.key) %}
         <form class="panel bonus-card" method="post" action="{{ url_for('main.update_challenge', challenge_key=challenge.key) }}">
-            <strong>{{ challenge.title }}</strong>
+            <div class="bonus-title">
+                <strong>{{ challenge.title }}</strong>
+                <span class="bonus-tooltip">
+                    ⓘ
+                    <span class="bonus-tooltip-text">
+                        {{ challenge.description }}
+                    </span>
+                </span>
+            </div>
             <span class="points-tag">{{ challenge.points }} points</span>
             <label class="check-row">
                 <input class="round-check round-check-sm" type="checkbox" name="completed" {% if completion and completion.completed %}checked{% endif %} {% if season_over %}disabled{% endif %} onchange="this.form.submit()">

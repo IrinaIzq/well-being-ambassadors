@@ -67,13 +67,14 @@
         {% endfor %}
     </div>
 
-    <h2>Bonus / Surprise Challenges — {{ seasons[season].name }}</h2>
+    <h2>Bonus Challenges — {{ seasons[season].name }}</h2>
     <div class="admin-table panel">
         {% for challenge in bonus_challenges %}
         <article class="admin-team">
             <div class="ranking-row">
                 <div>
-                    <strong>{{ challenge.title }}</strong>
+                    <strong>{{ challenge.title }}</strong><br>
+                    <small>{{ challenge.description }}</small><br>
                     <small>{{ challenge.points }} points · {{ "Active" if challenge.active else "Inactive" }}</small>
                 </div>
                 <form method="post" action="{{ url_for('admin.toggle_bonus_challenge', challenge_id=challenge.id) }}">
@@ -90,9 +91,26 @@
     </div>
     <form class="panel form-grid" method="post" action="{{ url_for('admin.create_bonus_challenge') }}">
         <input type="hidden" name="season" value="{{ season }}">
-        <input type="text" name="title" placeholder="Surprise challenge title" required>
-        <input type="number" name="points" value="2" min="1" style="max-width:6rem">
-        <button class="button primary" type="submit">Launch surprise challenge</button>
+        <input
+            type="text"
+            name="title"
+            placeholder="Bonus challenge title"
+            required>
+        <textarea
+            name="description"
+            rows="3"
+            placeholder="Brief description shown when users hover over the challenge."
+            required></textarea>
+        <input
+            type="number"
+            name="points"
+            value="2"
+            min="1"
+            style="max-width:6rem">
+
+        <button class="button primary" type="submit">
+            Launch bonus challenge
+        </button>
     </form>
 
     <h2>Announcements</h2>
