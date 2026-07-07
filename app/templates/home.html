@@ -8,15 +8,27 @@
             <h1>{{ seasons[season].name }} Season</h1>
             <p class="welcome-sub">{{ seasons[season].period }}</p>
         </div>
-        <div class="hero-stats">
-            <div class="hero-pill">
-                <span>{{ days_left }}</span>
-                <p>days left</p>
+
+        <div class="hero-right">
+
+            <div class="hero-stats">
+                <div class="hero-pill">
+                    <span>{{ days_left }}</span>
+                    <p>days left</p>
+                </div>
+
+                <div class="hero-pill">
+                    <span>{{ points }}</span>
+                    <p>team points</p>
+                </div>
             </div>
-            <div class="hero-pill">
-                <span>{{ points }}</span>
-                <p>team points</p>
-            </div>
+
+            <img
+                src="{{ url_for('static', filename='images/ie-logo-white.png') }}"
+                alt="IE Center for Health & Well-Being"
+                class="hero-logo"
+            >
+
         </div>
     </div>
 
