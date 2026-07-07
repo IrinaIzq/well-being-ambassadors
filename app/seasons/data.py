@@ -49,7 +49,7 @@ FALL_CHALLENGES = [
         "key": "fall-kindness-challenge",
         "pillar": "Soul",
         "title": "Kindness Challenge",
-        "description": "Each team member writes a positive message for another colleague.",
+        "description": "Each team member writes a positive message for another colleague. (In honor of World Kindness Day, November 13th)",
     },
     {
         "key": "fall-gratitude-wall",
@@ -59,11 +59,89 @@ FALL_CHALLENGES = [
     },
 ]
 
+WINTER_CHALLENGES = [
+    {
+        "key": "winter-mindfulness-together",
+        "pillar": "Mind",
+        "title": "Mindfulness Together",
+        "description": "Attend a guided meditation session organised by the Center for Health & Well-being.",
+    },
+    {
+        "key": "winter-focus-hour",
+        "pillar": "Mind",
+        "title": "Focus Hour",
+        "description": "Dedicate one uninterrupted hour to focused work by silencing notifications and avoiding multitasking.",
+    },
+    {
+        "key": "winter-exercise-snacks",
+        "pillar": "Body",
+        "title": "Exercise Snacks",
+        "description": "Take a 2-3 minute movement break every hour during the working day.",
+    },
+    {
+        "key": "winter-stairs",
+        "pillar": "Body",
+        "title": "Stairs Challenge",
+        "description": "Take the stairs instead of the elevator for a few times this week.",
+    },
+    {
+        "key": "winter-strength-spotting",
+        "pillar": "Soul",
+        "title": "Strength Spotting",
+        "description": "Identify and acknowledge the strengths of your colleagues.",
+    },
+    {
+        "key": "winter-happiness-week",
+        "pillar": "Soul",
+        "title": "Happiness Week",
+        "description": "Participate in any of the activities organized during the Happiness Week (March 15-19).",
+    },
+]
+
+SPRING_CHALLENGES = [
+    {
+        "key": "spring-mindfulness-together",
+        "pillar": "Mind",
+        "title": "Mindfulness Together",
+        "description": "Attend a guided meditation session organised by the Center for Health & Well-being.",
+    },
+    {
+        "key": "spring-outside-lunch",
+        "pillar": "Mind",
+        "title": "Outside Lunch",
+        "description": "Take your lunch break outside to enjoy fresh air and sunlight.",
+    },
+    {
+        "key": "spring-afterlunch-walk",
+        "pillar": "Body",
+        "title": "After-Lunch Walk",
+        "description": "Take a 10-15 minute walk after your lunch break.",
+    },
+    {
+        "key": "fall-active-break",
+        "pillar": "Body",
+        "title": "Active Break",
+        "description": "Organise one five-minute active break during the working week.",
+    },
+    {
+        "key": "spring-coffee-break-conversations",
+        "pillar": "Soul",
+        "title": "Coffee Break Conversations",
+        "description": "Take a few minutes each day to have a conversation with a colleague over coffee.",
+    },
+        {
+        "key": "spring-journaling-practice",
+        "pillar": "Soul",
+        "title": "Journaling Practice",
+        "description": "Spend a moment minutes each day writing in a journal. If needed, you can ask us for a journal and we will provide it.",
+    },
+]
+
 
 SEASON_CHALLENGES = {
     "fall": FALL_CHALLENGES,
-    "winter": [{**challenge, "key": challenge["key"].replace("fall", "winter", 1)} for challenge in FALL_CHALLENGES],
-    "spring": [{**challenge, "key": challenge["key"].replace("fall", "spring", 1)} for challenge in FALL_CHALLENGES],
+    "winter": WINTER_CHALLENGES,
+    "spring": SPRING_CHALLENGES,
 }
 
 
