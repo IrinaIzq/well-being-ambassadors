@@ -66,8 +66,19 @@
                     Mark as completed
                 </label>
                 <label class="check-row">
-                    <input class="round-check" type="checkbox" name="proof_sent" {% if completion and completion.proof_sent %}checked{% endif %} {% if season_over %}disabled{% endif %} onchange="this.form.submit()">
+                    <input class="round-check" type="checkbox" name="proof_sent"
+                        {% if completion and completion.proof_sent %}checked{% endif %}
+                        {% if season_over %}disabled{% endif %}
+                        onchange="this.form.submit()">
+
                     Proof photo sent
+
+                    <span class="info-tooltip">
+                        ⓘ
+                        <span class="tooltip-text">
+                            Proof photo must be sent through the Ambassadors Teams channel.
+                        </span>
+                    </span>
                 </label>
             </form>
             {% endfor %}
