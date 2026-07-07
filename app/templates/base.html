@@ -9,7 +9,7 @@
 <body>
     {% if current_user.is_authenticated %}
     <header class="topbar">
-        <a class="brand" href="{{ url_for('main.home') }}">Well-Being Ambassadors</a>
+        <a class="brand" href="{{ url_for('main.home') }}">IE Center for Health & Well-Being Ambassadors</a>
         <nav>
             {% if current_user.is_admin() %}
             <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
