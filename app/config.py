@@ -23,5 +23,5 @@ class Config:
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER") or "noreply@wellbeing.quest"
-    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@wellbeing.quest")
-    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "ChangeThisPassword123!")
+    ADMIN_EMAIL = "wellbeingcenter@ie.edu"
+    ADMIN_PASSWORD = "12345678"
