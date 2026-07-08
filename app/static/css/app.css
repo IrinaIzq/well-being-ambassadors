@@ -973,3 +973,40 @@ small {
     visibility:visible;
     opacity:1;
 }
+
+/* ---------- Login page ---------- */
+
+.login-copy{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.login-title{
+    font-size:2.8rem;
+    line-height:1.15;
+    font-weight:700;
+    margin:0 0 2rem;
+    white-space:nowrap;
+}
+
+.login-logo{
+    width:280px;
+    max-width:100%;
+    height:auto;
+}
+
+@media (max-width:900px){
+
+    .login-title{
+        font-size:2.2rem;
+        white-space:normal;
+    }
+
+    .login-logo{
+        width:200px;
+    }
+
+}

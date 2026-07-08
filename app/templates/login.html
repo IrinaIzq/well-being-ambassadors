@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="auth-shell">
-    <div>
-        <p class="eyebrow">Seasonal team wellbeing</p>
-        <h1>Well-Being Ambassadors Quest</h1>
-        <p class="lede">Sign in, create your team, join a season, and track Body, Mind and Soul challenges together.</p>
+    <div class="login-copy">
+        <h1 class="login-title">
+            Well-Being Ambassadors Quest
+        </h1>
+        <img
+            class="login-logo"
+            src="{{ url_for('static', filename='img/ie-logo-blue.png') }}"
+            alt="IE Center for Health & Well-Being">
     </div>
 
     <div class="auth-panel">
