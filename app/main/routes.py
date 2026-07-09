@@ -7,16 +7,26 @@ from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOf
 from app.seasons.data import DEFAULT_BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
 from app.seasons.utils import days_remaining_in_season, season_is_over
 
+import uuid
 
-def get_active_bonus_challenges(season):
-    """Bonus/surprise challenges currently active for a season, seeding the
-    starter set the first time a season is touched."""
+
+def get_active_bonus_challenges(season, team_id=None):
+    """Return the default bonus challenges plus any custom ones created by
+    the current team."""
     ensure_default_bonus_challenges(season)
-    return (
-        BonusChallenge.query.filter_by(season=season, active=True)
-        .order_by(BonusChallenge.created_at.asc())
-        .all()
+
+    query = BonusChallenge.query.filter(
+        BonusChallenge.season == season,
+        BonusChallenge.active == True,
     )
+
+    if team_id is not None:
+        query = query.filter(
+            (BonusChallenge.created_by_team_id == None)
+            | (BonusChallenge.created_by_team_id == team_id)
+        )
+
+    return query.order_by(BonusChallenge.created_at.asc()).all()
 
 
 def ensure_default_bonus_challenges(season):
@@ -25,7 +35,11 @@ def ensure_default_bonus_challenges(season):
     won't duplicate existing ones, and it will backfill new challenges added
     to the shared list for seasons that were already touched before."""
     existing_keys = {
-        challenge.key for challenge in BonusChallenge.query.filter_by(season=season).all()
+        challenge.key
+        for challenge in BonusChallenge.query.filter_by(
+            season=season,
+            created_by_team_id=None
+        ).all()
     }
     added = False
     for challenge in DEFAULT_BONUS_CHALLENGES.get(season, []):
@@ -111,7 +125,7 @@ def home():
         season_over=season_over,
         announcements=Announcement.query.order_by(Announcement.created_at.desc()).limit(5).all(),
         pillars=pillars,
-        bonus_challenges=get_active_bonus_challenges(season),
+        bonus_challenges=get_active_bonus_challenges(season, team.id),
         completion_map=completion_map,
         points=get_team_points(team, season),
         ranking=ranked_teams(season),
@@ -186,4 +200,30 @@ def update_challenge(challenge_key):
     completion.proof_sent = request.form.get("proof_sent") == "on"
     db.session.commit()
 
+    return redirect(url_for("main.home"))
+
+@main_bp.route("/bonus/create", methods=["POST"])
+@login_required
+def create_custom_bonus():
+    from app.models import BonusChallenge
+
+    team = current_user.team
+
+    title = request.form["title"].strip()
+    description = request.form["description"].strip()
+
+    challenge = BonusChallenge(
+        season=team.current_season,
+        key=f"team-{team.id}-{uuid.uuid4().hex[:8]}",
+        title=title,
+        description=description,
+        points=2,
+        created_by_team_id=team.id,
+        active=True,
+    )
+
+    db.session.add(challenge)
+    db.session.commit()
+
+    flash("Bonus challenge added!", "success")
     return redirect(url_for("main.home"))

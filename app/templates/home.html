@@ -107,6 +107,26 @@
         <p class="muted">No bonus challenges active right now — check back soon!</p>
         {% endfor %}
     </div>
+    <div class="panel bonus-card bonus-add-card">
+        <div class="bonus-title">
+            <strong>Add your own challenge</strong>
+
+            <span class="bonus-tooltip">
+                ⓘ
+                <span class="bonus-tooltip-text">
+                    Add here those well-being initiatives you came up with and your team has completed.
+                </span>
+            </span>
+        </div>
+
+        <button
+            type="button"
+            class="button primary"
+            onclick="document.getElementById('customBonus').showModal()">
+            + Create
+        </button>
+
+    </div>
 
     <section class="leaderboard-layout">
         <div>
@@ -154,4 +174,39 @@
         </div>
     </section>
 </section>
+
+<dialog id="customBonus">
+    <form method="post" action="{{ url_for('main.create_custom_bonus') }}">
+        <h3>New Bonus Challenge</h3>
+
+        <label>
+            Challenge name
+            <input
+                type="text"
+                name="title"
+                required>
+        </label>
+
+        <label>
+            Description
+            <textarea
+                name="description"
+                required></textarea>
+        </label>
+
+        <button
+            class="button primary"
+            type="submit">
+            Create
+        </button>
+
+        <button
+            type="button"
+            class="button ghost"
+            onclick="document.getElementById('customBonus').close()">
+            Cancel
+        </button>
+    </form>
+</dialog>
+
 {% endblock %}

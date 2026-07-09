@@ -85,10 +85,6 @@ class ChallengeCompletion(db.Model):
 
 
 class BonusChallenge(db.Model):
-    """A surprise/bonus challenge for a season. Admin-managed so new ones
-    can be launched without touching code, per the "one or two surprise
-    challenges per Season" rule."""
-
     id = db.Column(db.Integer, primary_key=True)
     season = db.Column(db.String(20), nullable=False)
     key = db.Column(db.String(80), nullable=False)
@@ -96,6 +92,19 @@ class BonusChallenge(db.Model):
     description = db.Column(db.Text, nullable=False)
     points = db.Column(db.Integer, nullable=False, default=2)
     active = db.Column(db.Boolean, nullable=False, default=True)
+
+    created_by_team_id = db.Column(
+        db.Integer,
+        db.ForeignKey("team.id"),
+        nullable=True,
+    )
+
+    approved = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+    )
+
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     __table_args__ = (

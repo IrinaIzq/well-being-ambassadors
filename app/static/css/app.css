@@ -1010,3 +1010,35 @@ small {
     }
 
 }
+
+/* ---------- Add custom bonus card ---------- */
+
+.bonus-add-card{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:1.2rem;
+}
+
+.bonus-add-card .button{
+    width:100%;
+}
+
+dialog{
+    border:none;
+    border-radius:20px;
+    padding:2rem;
+    max-width:500px;
+    width:90%;
+    box-shadow:0 20px 50px rgba(0,0,0,.2);
+}
+
+dialog::backdrop{
+    background:rgba(0,0,0,.35);
+}
+
+dialog form{
+    display:grid;
+    gap:1rem;
+}
