@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from app.admin import admin_bp
 from app.extensions import db
 from app.main.routes import ensure_default_bonus_challenges, get_team_points, ranked_teams
-from app.models import Announcement, BonusChallenge, HallOfFameEntry, SeasonResult, Team
+from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team, TeamMember, User
 from app.seasons.data import SEASONS
 
 
@@ -48,6 +48,31 @@ def admin_dashboard():
         ).all(),
     )
 
+# ---- Teams -------------------------------------------------------------------------
+
+@admin_bp.route("/teams/<int:team_id>/delete", methods=["POST"])
+@login_required
+def delete_team(team_id):
+    if not admin_only():
+        return redirect(url_for("main.home"))
+
+    team = Team.query.get_or_404(team_id)
+    team_name = team.name
+    captain = team.captain
+
+    # Clean up everything that points at this team so nothing is left orphaned.
+    ChallengeCompletion.query.filter_by(team_id=team.id).delete()
+    TeamMember.query.filter_by(team_id=team.id).delete()
+    if hasattr(BonusChallenge, "created_by_team_id"):
+        BonusChallenge.query.filter_by(created_by_team_id=team.id).delete()
+
+    db.session.delete(team)
+    if captain:
+        db.session.delete(captain)
+
+    db.session.commit()
+    flash(f'Team "{team_name}" and its login were deleted.', "success")
+    return redirect(url_for("admin.admin_dashboard", season=request.form.get("season", "fall")))
 
 # ---- Bonus / surprise challenges -------------------------------------------------
 

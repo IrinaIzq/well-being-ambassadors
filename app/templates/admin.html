@@ -30,6 +30,10 @@
                     <small>{{ item.team.departments }}</small>
                 </div>
                 <b>{{ item.points }} pts</b>
+                <form method="post" action="{{ url_for('admin.delete_team', team_id=item.team.id) }}" onsubmit="return confirm('Delete team \'{{ item.team.name }}\' permanently? This removes its members, completed challenges, points and login. This cannot be undone.');">
+                    <input type="hidden" name="season" value="{{ season }}">
+                    <button class="button ghost" type="submit">Delete team</button>
+                </form>
             </div>
             <div class="member-list">
                 {% for member in item.team.members %}
