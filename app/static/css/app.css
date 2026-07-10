@@ -1014,15 +1014,24 @@ small {
 /* ---------- Add custom bonus card ---------- */
 
 .bonus-add-card{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:1.2rem;
+    margin-top: 14px;
+    width: 100%;
+
+    padding: 12px 24px;
+
+    background: var(--blue-100);
+    border: 1px solid var(--blue-200);
+    border-radius: var(--radius-md);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
 }
 
 .bonus-add-card .button{
-    width:100%;
+    width: auto;
+    min-width: 220px;
 }
 
 dialog{
