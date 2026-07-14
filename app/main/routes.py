@@ -11,19 +11,17 @@ import uuid
 
 
 def get_active_bonus_challenges(season, team_id=None):
-    """Return the default bonus challenges plus any custom ones created by
-    the current team."""
     ensure_default_bonus_challenges(season)
 
-    query = BonusChallenge.query.filter(
-        BonusChallenge.season == season,
-        BonusChallenge.active == True,
+    query = BonusChallenge.query.filter_by(
+        season=season,
+        active=True
     )
 
     if team_id is not None:
         query = query.filter(
-            (BonusChallenge.created_by_team_id == None)
-            | (BonusChallenge.created_by_team_id == team_id)
+            (BonusChallenge.created_by_team_id == None) |
+            (BonusChallenge.created_by_team_id == team_id)
         )
 
     return query.order_by(BonusChallenge.created_at.asc()).all()
@@ -54,8 +52,12 @@ def ensure_default_bonus_challenges(season):
 def get_team_points(team, season):
     points = 0
     bonus_keys = {
-        challenge.key
-        for challenge in BonusChallenge.query.filter_by(season=season).all()
+        c.key
+        for c in BonusChallenge.query.filter(
+            BonusChallenge.season == season,
+            (BonusChallenge.created_by_team_id == None) |
+            (BonusChallenge.created_by_team_id == team.id)
+        )
     }
     bonus_points_by_key = {
         challenge.key: challenge.points

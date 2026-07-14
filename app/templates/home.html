@@ -163,7 +163,16 @@
                     {% endif %}
                     <div>
                         <strong>{{ item.team.name }}</strong>
-                        <small>{{ item.team.departments }}</small>
+
+                        <small>
+                            {{ item.team.departments }}
+                            {% if item.team.members %}
+                                —
+                                {% for member in item.team.members %}
+                                    {{ member.full_name }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </small>
                     </div>
                     <b>{{ item.points }} pts</b>
                 </div>

@@ -38,7 +38,13 @@ def admin_dashboard():
         season=season,
         seasons=SEASONS,
         current_year=date.today().year,
-        bonus_challenges=BonusChallenge.query.filter_by(season=season).order_by(BonusChallenge.created_at.asc()).all(),
+        bonus_challenges=(
+            BonusChallenge.query
+            .filter_by(season=season)
+            .order_by(BonusChallenge.created_at.asc())
+            .all()
+        ),
+        teams=Team.query.all(),
         announcements=Announcement.query.order_by(Announcement.created_at.desc()).all(),
         hall_of_fame_entries=HallOfFameEntry.query.order_by(
             HallOfFameEntry.year.desc(), HallOfFameEntry.category.asc()

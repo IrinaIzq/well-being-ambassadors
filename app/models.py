@@ -99,6 +99,11 @@ class BonusChallenge(db.Model):
         nullable=True,
     )
 
+    created_by_team = db.relationship(
+        "Team",
+        foreign_keys=[created_by_team_id],
+    )
+
     approved = db.Column(
         db.Boolean,
         nullable=False,
