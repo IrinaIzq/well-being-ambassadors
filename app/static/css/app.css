@@ -985,11 +985,23 @@ small {
 }
 
 .login-title{
-    font-size:2.8rem;
-    line-height:1.15;
-    font-weight:700;
-    margin:0 0 2rem;
+    font-size:3.4rem;      /* un poco más grande */
+    line-height:1.1;
+    font-weight:800;
+    margin:0;
     white-space:nowrap;
+}
+
+.login-subtitle{
+    margin-top:0.8rem;
+    margin-bottom:2rem;
+
+    font-size:1.15rem;
+    font-style:italic;
+    font-weight:400;
+    color:var(--muted);
+
+    max-width:520px;
 }
 
 .login-logo{
@@ -1001,8 +1013,13 @@ small {
 @media (max-width:900px){
 
     .login-title{
-        font-size:2.2rem;
+        font-size:2.6rem;
         white-space:normal;
+    }
+
+    .login-subtitle{
+        font-size:1rem;
+        max-width:90%;
     }
 
     .login-logo{
