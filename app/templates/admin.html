@@ -48,10 +48,33 @@
 
     <h2>🏆 Close Season — archive to Hall of Fame</h2>
     <p class="muted">Freezes the current podium + ranking for {{ seasons[season].name }} and adds it permanently to the Hall of Fame.</p>
-    <form class="panel form-grid" method="post" action="{{ url_for('admin.close_season') }}">
+    <form
+        class="panel form-grid"
+        method="post"
+        action="{{ url_for('admin.close_season') }}"
+        onsubmit="return confirm(
+            'Are you sure you want to close this season?\n\n' +
+            'This will:\n' +
+            '• Archive the final ranking in the Hall of Fame\n' +
+            '• Delete ALL teams\n' +
+            '• Delete ALL team members\n' +
+            '• Delete ALL completed challenges\n' +
+            '• Delete ALL team-created bonus challenges\n' +
+            '• Delete ALL participant accounts (admins are kept)\n\n' +
+            'This action cannot be undone.'
+        );"
+    >
         <input type="hidden" name="season" value="{{ season }}">
-        <input type="number" name="year" value="{{ current_year }}" required style="max-width:8rem">
-        <button class="button primary" type="submit">Close {{ seasons[season].name }} {{ current_year }} &amp; archive</button>
+        <input
+            type="number"
+            name="year"
+            value="{{ current_year }}"
+            required
+            style="max-width:8rem">
+
+        <button class="button primary" type="submit">
+            Close {{ seasons[season].name }} {{ current_year }} &amp; Archive & Reset
+        </button>
     </form>
     <div class="admin-table panel" style="margin-top: 1rem;">
         {% for result in season_results %}

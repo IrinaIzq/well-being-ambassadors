@@ -6,6 +6,12 @@ from app.models import Team, TeamMember
 from app.seasons.data import SEASONS
 from app.teams import teams_bp
 
+import os
+from uuid import uuid4
+
+from werkzeug.utils import secure_filename
+from flask import current_app
+
 
 def member_rows_from_request():
     rows = []
@@ -31,13 +37,34 @@ def create_team():
             flash("Add at least one team member with name and email.", "danger")
             return redirect(url_for("teams.create_team"))
 
+        logo_url = None
+
+        logo = request.files.get("logo")
+
+        if logo and logo.filename:
+            filename = secure_filename(logo.filename)
+            extension = os.path.splitext(filename)[1]
+
+            new_filename = f"{uuid4().hex}{extension}"
+
+            upload_folder = os.path.join(current_app.static_folder, "uploads")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            logo.save(os.path.join(upload_folder, new_filename))
+
+            logo_url = url_for(
+                "static",
+                filename=f"uploads/{new_filename}"
+            )
+
         team = Team(
             name=request.form["team_name"].strip(),
             departments=request.form["departments"].strip(),
             captain_user_id=current_user.id,
-            logo_url=request.form.get("logo_url", "").strip() or None,
+            logo_url=logo_url,
             current_season=request.form["season"],
         )
+
         db.session.add(team)
         db.session.flush()
 
@@ -67,7 +94,22 @@ def settings():
 
         team.name = request.form["team_name"].strip()
         team.departments = request.form["departments"].strip()
-        team.logo_url = request.form.get("logo_url", "").strip() or None
+        logo = request.files.get("logo")
+        if logo and logo.filename:
+            filename = secure_filename(logo.filename)
+            extension = os.path.splitext(filename)[1]
+
+            new_filename = f"{uuid4().hex}{extension}"
+
+            upload_folder = os.path.join(current_app.static_folder, "uploads")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            logo.save(os.path.join(upload_folder, new_filename))
+
+            team.logo_url = url_for(
+                "static",
+                filename=f"uploads/{new_filename}"
+            )
         team.current_season = request.form["season"]
         current_user.full_name = request.form["captain_name"].strip()
 

@@ -23,11 +23,17 @@
         </div>
     </div>
 
-    <form class="panel settings-form" method="post">
+    <form class="panel settings-form" method="post" enctype="multipart/form-data">
         <label>Team name <input name="team_name" required value="{{ team.name }}"></label>
         <label>Department(s) <input name="departments" required value="{{ team.departments }}"></label>
         <label>Captain name <input name="captain_name" required value="{{ team.captain.full_name }}"></label>
-        <label>Team logo URL <input name="logo_url" value="{{ team.logo_url or '' }}"></label>
+        <label>
+            Team logo
+            <input
+                type="file"
+                name="logo"
+                accept="image/png,image/jpeg,image/jpg,image/webp">
+        </label>
         <label>Change season
             <select name="season">
                 {% for key, value in seasons.items() %}

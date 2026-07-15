@@ -149,3 +149,27 @@ class SeasonResult(db.Model):
     year = db.Column(db.Integer, nullable=False)
     ranking_json = db.Column(db.Text, nullable=False)  # [{"team_name","logo_url","points"}, ...]
     closed_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+class GameState(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    current_season = db.Column(db.String(20), nullable=False, default="fall")
+    current_year = db.Column(db.Integer, nullable=False)
+    season_closed = db.Column(db.Boolean, default=False)
+
+class Setting(db.Model):
+    key = db.Column(db.String(100), primary_key=True)
+    value = db.Column(db.String(255))
+
+    @staticmethod
+    def get(key, default=None):
+        s = Setting.query.get(key)
+        return s.value if s else default
+
+    @staticmethod
+    def set(key, value):
+        s = Setting.query.get(key)
+        if not s:
+            s = Setting(key=key)
+            db.session.add(s)
+        s.value = str(value)

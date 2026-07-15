@@ -1,21 +1,24 @@
+from datetime import date
+
+
 SEASONS = {
     "fall": {
         "name": "Fall",
         "period": "October - December",
-        "start": (7, 5),
-        "end": (12, 18),
+        "start": date(2026,7,15),
+        "end": date(2026,12,18),
     },
     "winter": {
         "name": "Winter",
         "period": "December - March",
-        "start": (12, 19),
-        "end": (3, 19),
+        "start": date(2027,1,7),
+        "end": date(2027,3,19),
     },
     "spring": {
         "name": "Spring",
         "period": "March - June",
-        "start": (3, 20),
-        "end": (6, 18),
+        "start": date(2027,3,20),
+        "end": date(2027,6,18),
     },
 }
 

@@ -5,7 +5,15 @@ from app.extensions import db
 from app.main import main_bp
 from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team
 from app.seasons.data import DEFAULT_BONUS_CHALLENGES, SEASON_CHALLENGES, SEASONS
-from app.seasons.utils import days_remaining_in_season, season_is_over
+from app.seasons.utils import (
+    days_remaining_in_season,
+    season_is_over,
+)
+
+from app.seasons.services import (
+    get_team_points,
+    ranked_teams,
+)
 
 import uuid
 
@@ -47,45 +55,6 @@ def ensure_default_bonus_challenges(season):
         added = True
     if added:
         db.session.commit()
-
-
-def get_team_points(team, season):
-    points = 0
-    bonus_keys = {
-        c.key
-        for c in BonusChallenge.query.filter(
-            BonusChallenge.season == season,
-            (BonusChallenge.created_by_team_id == None) |
-            (BonusChallenge.created_by_team_id == team.id)
-        )
-    }
-    bonus_points_by_key = {
-        challenge.key: challenge.points
-        for challenge in BonusChallenge.query.filter_by(season=season).all()
-    }
-
-    for completion in team.completions:
-        if completion.season != season:
-            continue
-        if completion.challenge_key in bonus_keys:
-            if completion.completed:
-                points += bonus_points_by_key[completion.challenge_key]
-            continue
-        if completion.completed:
-            points += 1
-        if completion.proof_sent:
-            points += 1
-
-    return points
-
-
-def ranked_teams(season):
-    ranking = [
-        {"team": team, "points": get_team_points(team, season)}
-        for team in Team.query.order_by(Team.name.asc()).all()
-        if team.current_season == season
-    ]
-    return sorted(ranking, key=lambda item: (-item["points"], item["team"].name.lower()))
 
 
 @main_bp.route("/")

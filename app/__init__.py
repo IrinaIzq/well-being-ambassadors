@@ -30,6 +30,11 @@ def create_app():
         db.create_all()
         ensure_admin_user(app)
 
+    from app.seasons.auto import check_season_rollover
+
+    with app.app_context():
+        check_season_rollover()
+
     return app
 
 

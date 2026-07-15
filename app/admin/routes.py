@@ -5,7 +5,13 @@ from flask_login import current_user, login_required
 
 from app.admin import admin_bp
 from app.extensions import db
-from app.main.routes import ensure_default_bonus_challenges, get_team_points, ranked_teams
+from app.main.routes import ensure_default_bonus_challenges
+
+from app.seasons.services import (
+    get_team_points,
+    ranked_teams,
+    archive_and_reset_season,
+)
 from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team, TeamMember, User
 from app.seasons.data import SEASONS
 
@@ -201,8 +207,6 @@ def delete_hall_of_fame_entry(entry_id):
     return redirect(url_for("admin.admin_dashboard"))
 
 
-# ---- Season results archive (feeds the Hall of Fame podium history) --------------
-
 @admin_bp.route("/season-results/close", methods=["POST"])
 @login_required
 def close_season():
@@ -211,33 +215,21 @@ def close_season():
 
     season = request.form["season"]
     year = request.form.get("year", "").strip()
+
     if not year.isdigit():
         flash("Give the season edition a year.", "danger")
         return redirect(url_for("admin.admin_dashboard", season=season))
 
-    ranking = ranked_teams(season)
-    snapshot = [
-        {
-            "team_name": item["team"].name,
-            "logo_url": item["team"].logo_url,
-            "points": item["points"],
-        }
-        for item in ranking
-    ]
+    archive_and_reset_season(
+        season=season,
+        year=int(year),
+        reset=True,
+    )
 
-    db.session.add(SeasonResult(season=season, year=int(year), ranking_json=json.dumps(snapshot)))
-    db.session.commit()
-    flash(f"{SEASONS[season]['name']} {year} archived to the Hall of Fame.", "success")
+    flash(
+        f"{SEASONS[season]['name']} {year} archived successfully. "
+        "All teams have been reset for the next season.",
+        "success",
+    )
+
     return redirect(url_for("admin.admin_dashboard", season=season))
-
-
-@admin_bp.route("/season-results/<int:result_id>/delete", methods=["POST"])
-@login_required
-def delete_season_result(result_id):
-    if not admin_only():
-        return redirect(url_for("main.home"))
-
-    result = SeasonResult.query.get_or_404(result_id)
-    db.session.delete(result)
-    db.session.commit()
-    return redirect(url_for("admin.admin_dashboard"))
