@@ -3,7 +3,7 @@ from datetime import date
 from app.extensions import db
 from app.models import Setting
 from app.seasons.data import SEASONS
-from app.seasons.utils import archive_and_reset_season
+from app.seasons.services import archive_and_reset_season
 
 
 def check_season_rollover():

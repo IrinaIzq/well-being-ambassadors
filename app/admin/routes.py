@@ -12,7 +12,7 @@ from app.seasons.services import (
     ranked_teams,
     archive_and_reset_season,
 )
-from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Team, TeamMember, User
+from app.models import Announcement, BonusChallenge, ChallengeCompletion, HallOfFameEntry, SeasonResult, Setting, Team, TeamMember, User
 from app.seasons.data import SEASONS
 
 
@@ -226,10 +226,18 @@ def close_season():
         reset=True,
     )
 
+    seasons = list(SEASONS.keys())
+    idx = seasons.index(season)
+    next_idx = (idx + 1) % len(seasons)
+    next_season = seasons[next_idx]
+
+    Setting.set("current_season", next_season)
+    db.session.commit()
+
     flash(
         f"{SEASONS[season]['name']} {year} archived successfully. "
-        "All teams have been reset for the next season.",
+        f"All teams have been reset and {SEASONS[next_season]['name']} is now active.",
         "success",
     )
 
-    return redirect(url_for("admin.admin_dashboard", season=season))
+    return redirect(url_for("admin.admin_dashboard", season=next_season))
