@@ -53,26 +53,21 @@
         </select>
     </label>
 
-    <button class="button primary wide" type="submit">
-        Create team
-    </button>
-
-</form>
-
-        <div class="wide">
-            <div class="section-heading">
-                <h2>Team members</h2>
-                <button class="button ghost" type="button" data-add-member>Add member</button>
-            </div>
-            <div data-members>
-                <div class="member-row">
-                    <input name="member_name" required value="{{ current_user.full_name }}" placeholder="Full name">
-                    <input name="member_email" required value="{{ current_user.email }}" type="email" placeholder="Email">
-                </div>
+    <div class="wide">
+        <div class="section-heading">
+            <h2>Team members</h2>
+            <button class="button ghost" type="button" data-add-member>Add member</button>
+        </div>
+        <div data-members>
+            <div class="member-row">
+                <input name="member_name" required value="{{ current_user.full_name }}" placeholder="Full name">
+                <input name="member_email" required value="{{ current_user.email }}" type="email" placeholder="Email">
             </div>
         </div>
+    </div>
 
-        <button class="button primary wide" type="submit">Create team and join season</button>
-    </form>
+    <button class="button primary wide" type="submit">Create team and join season</button>
+
+</form>
 </section>
 {% endblock %}

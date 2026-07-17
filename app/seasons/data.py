@@ -164,7 +164,7 @@ BONUS_CHALLENGES = [
     {
         "key": "bonus-step-challenge",
         "title": "Step Challenge",
-        "description": "Complete a step challenge as a team during the day.",
+        "description": "Walk or run for at least 30 minutes 4 times in a week.",
     },
     {
         "key": "bonus-kindness",
