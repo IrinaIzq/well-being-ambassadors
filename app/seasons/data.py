@@ -58,7 +58,7 @@ FALL_CHALLENGES = [
         "key": "fall-gratitude-wall",
         "pillar": "Soul",
         "title": "Gratitude Wall",
-        "description": "Create a gratitude wall and collect at least 10 messages.",
+        "description": "Create a gratitude wall with at least 10 messages.",
     },
 ]
 
